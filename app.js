@@ -605,7 +605,7 @@ function renderSummary(evParam){
       '<p class="text-e-200 text-xs font-semibold mb-2"><i class="fas fa-images text-amb mr-1"></i>Registro fotografico ('+allPhotos.length+')</p>'+
       '<div class="grid grid-cols-3 gap-1.5">'+
       allPhotos.map(function(p){
-        var lbl=labels[p.key]||SP.find(function(s){return s.id===p.key;})?SP.find(function(s){return s.id===p.key;}).name:'';
+        var _sp=SP.find(function(s){return s.id===p.key;});var lbl=labels[p.key]||(_sp?_sp.name:'');
         return '<div style="position:relative"><img src="'+p.url+'" style="width:100%;border-radius:4px;aspect-ratio:1;object-fit:cover">'+
           (lbl?'<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.6);font-size:8px;color:#f5efe6;text-align:center;padding:2px;border-radius:0 0 4px 4px">'+lbl+'</div>':'')+
           '</div>';}).join('')+'</div></div>';

@@ -1,13 +1,13 @@
-/* CBS Evaluador — Service Worker v1 */
-var CACHE='cbs-v1';
+/* CBS Evaluador — Service Worker v2 */
+var CACHE='cbs-v2';
 
 /* Archivos locales pre-cacheados al instalar */
 var LOCAL=[
   '/',
   '/app.js',
-  '/firebase-config.js',
+  '/supabase-config.js',
   '/services/storage.service.js',
-  '/services/firebase.provider.js',
+  '/services/supabase.provider.js',
   '/manifest.json',
   '/icon.svg'
 ];

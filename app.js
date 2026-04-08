@@ -113,7 +113,7 @@ function wormCalc(n){
 }
 
 /* ========== ESTADO ========== */
-var St={step:0,site:{ev:'',ce:'',un:'',fe:'',ri:'',zo:'',pu:''},photos:{sh:[],sd:[]},ratings:{},notes:{},checks:{},wormCount:0,imgA:{},evals:[],cons:{}};
+var St={step:0,site:{ev:'',ce:'',un:'',fe:'',ri:'',zo:'',pu:'',lat:null,lng:null,alt:null,acc:null},photos:{sh:[],sd:[]},ratings:{},notes:{},checks:{},wormCount:0,imgA:{},evals:[],cons:{}};
 SP.forEach(function(sp){St.ratings[sp.id]=null;St.notes[sp.id]='';St.checks[sp.id]={};St.imgA[sp.id]=null;});
 var SLBL=['Datos','Fotos','Detritosfera','Agregatosfera','Drilosfera','Rizosfera','Porosfera','Resumen'];
 
@@ -165,9 +165,58 @@ function updProg(step){
   });
 }
 
+/* ========== GEOLOCALIZACIÓN ========== */
+function captureGeo(){
+  if(!navigator.geolocation){toast('GPS no disponible en este dispositivo','e');return;}
+  var btn=document.getElementById('geo-btn');
+  var disp=document.getElementById('geo-display');
+  if(!btn||!disp)return;
+  btn.disabled=true;
+  btn.innerHTML='<i class="fas fa-spinner fa-spin mr-1"></i>Obteniendo GPS...';
+  disp.innerHTML='<span class="text-e-600 text-xs"><i class="fas fa-info-circle mr-1"></i>Mantén el teléfono al aire libre para mejor precisión...</span>';
+  navigator.geolocation.getCurrentPosition(
+    function(pos){
+      St.site.lat=pos.coords.latitude;
+      St.site.lng=pos.coords.longitude;
+      St.site.alt=pos.coords.altitude!=null?Math.round(pos.coords.altitude):null;
+      St.site.acc=Math.round(pos.coords.accuracy);
+      btn.disabled=false;
+      btn.innerHTML='<i class="fas fa-location-dot mr-1"></i>Recapturar ubicacion';
+      updGeoDisplay();
+      if(St.site.acc>30)toast('Precisión baja (±'+St.site.acc+'m). Mejor al aire libre.','i');
+      else toast('Ubicación capturada (±'+St.site.acc+'m)','s');
+    },
+    function(err){
+      btn.disabled=false;
+      btn.innerHTML='<i class="fas fa-location-dot mr-1"></i>Capturar ubicacion GPS';
+      var msg=err.code===1?'Permiso denegado — actívalo en ajustes del teléfono':
+              err.code===2?'No se pudo obtener la ubicación':
+              'Tiempo agotado — intenta al aire libre';
+      disp.innerHTML='<span class="text-e-700 text-xs">'+msg+'</span>';
+      toast(msg,'e');
+    },
+    {enableHighAccuracy:true,timeout:20000,maximumAge:0}
+  );
+}
+
+function updGeoDisplay(){
+  var disp=document.getElementById('geo-display');
+  if(!disp)return;
+  if(!St.site.lat){disp.innerHTML='<span class="text-e-700 text-xs">No capturada — presiona el botón estando en el punto exacto</span>';return;}
+  var acc=St.site.acc||0;
+  var clr=acc<=10?'#5a8a4a':acc<=30?'#d4a853':'#c44b3f';
+  var altHTML=St.site.alt!=null?' · '+St.site.alt+'m snm':'';
+  disp.innerHTML=
+    '<div style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap">'+
+    '<i class="fas fa-location-dot" style="color:'+clr+'"></i>'+
+    '<span class="text-e-200 text-xs">'+St.site.lat.toFixed(6)+', '+St.site.lng.toFixed(6)+altHTML+'</span>'+
+    '<span style="background:'+clr+'1a;color:'+clr+';border:1px solid '+clr+'40;border-radius:10px;padding:1px 6px;font-size:10px">±'+acc+'m</span>'+
+    '</div>';
+}
+
 /* ========== SITE DATA ========== */
 function saveSite(){['ev','ce','un','fe','ri','zo','pu'].forEach(function(k){St.site[k]=document.getElementById('i-'+k).value;});}
-function loadSite(){['ev','ce','un','fe','ri','zo','pu'].forEach(function(k){document.getElementById('i-'+k).value=St.site[k]||'';});if(!St.site.fe)document.getElementById('i-fe').value=new Date().toISOString().split('T')[0];}
+function loadSite(){['ev','ce','un','fe','ri','zo','pu'].forEach(function(k){document.getElementById('i-'+k).value=St.site[k]||'';});if(!St.site.fe)document.getElementById('i-fe').value=new Date().toISOString().split('T')[0];updGeoDisplay();}
 
 /* ========== FOTOS GALERIA MULTI (s2 — hasta 3 por vista) ========== */
 function mkPhotoGallery(key,container,maxPhotos){
@@ -466,7 +515,7 @@ function finishEval(){
   var evalId='eval_'+Date.now();
   var ev={
     id:evalId,
-    site:{ev:St.site.ev,ce:St.site.ce,un:St.site.un,fe:St.site.fe,ri:St.site.ri,zo:St.site.zo,pu:St.site.pu},
+    site:{ev:St.site.ev,ce:St.site.ce,un:St.site.un,fe:St.site.fe,ri:St.site.ri,zo:St.site.zo,pu:St.site.pu,lat:St.site.lat,lng:St.site.lng,alt:St.site.alt,acc:St.site.acc},
     photos:{},photoRefs:{},ratings:{},notes:{},checks:{},
     wormCount:St.wormCount,ts:new Date().toISOString(),synced:false
   };
@@ -759,7 +808,7 @@ function newPart(){
 }
 function resetAll(){
   SP.forEach(function(s){St.ratings[s.id]=null;St.notes[s.id]='';St.checks[s.id]={};St.imgA[s.id]=null;});
-  St.photos={sh:[],sd:[]};St.wormCount=0;St.site={ev:'',ce:'',un:'',fe:'',ri:'',zo:'',pu:''};
+  St.photos={sh:[],sd:[]};St.wormCount=0;St.site={ev:'',ce:'',un:'',fe:'',ri:'',zo:'',pu:'',lat:null,lng:null,alt:null,acc:null};
   St.evals=[];St.cons={};
   try{localStorage.removeItem('cbs_ev');localStorage.removeItem('cbs_cons');}catch(e){}
   nav(0);

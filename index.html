@@ -128,6 +128,15 @@ body{margin:0;font-family:'Source Sans 3',sans-serif;background:#1a1510;color:#f
       <div><label class="flb">Zona observacion</label><input id="i-zo" class="finp" placeholder="Ej: Entre hilera"></div>
       <div><label class="flb">Punto (hilera/planta)</label><input id="i-pu" class="finp" placeholder="Ej: H-12, P-5"></div>
     </div>
+    <div>
+      <label class="flb">Ubicacion GPS del punto de muestreo</label>
+      <button id="geo-btn" class="bs w-full text-sm py-2" onclick="captureGeo()">
+        <i class="fas fa-location-dot mr-1"></i>Capturar ubicacion GPS
+      </button>
+      <div id="geo-display" class="mt-1.5" style="min-height:18px">
+        <span class="text-e-700 text-xs">No capturada — presiona el botón estando en el punto exacto</span>
+      </div>
+    </div>
   </div>
   <div class="flex gap-2 mt-5">
     <button class="bs flex-1" onclick="nav(0)"><i class="fas fa-arrow-left mr-1"></i>Atras</button>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="90" fill="#1a1510"/>
+  <circle cx="256" cy="256" r="190" fill="#223318"/>
+  <!-- tallo -->
+  <line x1="256" y1="370" x2="256" y2="185" stroke="#5a8a4a" stroke-width="18" stroke-linecap="round"/>
+  <!-- hoja izquierda -->
+  <path d="M256 285 Q195 255 172 185 Q235 188 256 285" fill="#5a8a4a"/>
+  <!-- hoja derecha -->
+  <path d="M256 248 Q315 218 340 148 Q278 158 256 248" fill="#3a6a2a"/>
+  <!-- tierra -->
+  <ellipse cx="256" cy="372" rx="90" ry="18" fill="#d4a853" opacity=".35"/>
+</svg>

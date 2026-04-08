@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>CBS — Condición Biológica de Suelo</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#d4a853">
+<link rel="apple-touch-icon" href="/icon.svg">
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -109,6 +112,12 @@ body{margin:0;font-family:'Source Sans 3',sans-serif;background:#1a1510;color:#f
     <i class="fas fa-wifi"></i><span>En linea</span>
   </div>
   <p class="text-e-700 text-xs mt-2">Datos guardados localmente en tu dispositivo</p>
+  <div style="margin-top:2rem;padding-top:1rem;border-top:1px solid #3d3428;text-align:center;display:flex;flex-direction:column;gap:.3rem">
+    <p style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#5a4725">CBS EVALUADOR &middot; v1.0 beta</p>
+    <p style="font-size:10px;color:#3d3428">Basado en Manual CERES &mdash; Sabaini &amp; &Aacute;vila 2015</p>
+    <p style="font-size:10px;color:#5a4725">&copy; 2026 Mauricio N&uacute;&ntilde;ez G. &middot; Todos los derechos reservados</p>
+    <a href="mailto:mauricioanunaonzalez@gmail.com" style="font-size:10px;color:#5a4725;text-decoration:none">mauricioanunaonzalez@gmail.com</a>
+  </div>
 </div>
 </div>
 
@@ -199,5 +208,15 @@ body{margin:0;font-family:'Source Sans 3',sans-serif;background:#1a1510;color:#f
 
 <!-- Logica principal -->
 <script src="app.js"></script>
+
+<!-- PWA Service Worker -->
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('/sw.js')
+      .catch(function(e){console.warn('SW no registrado:',e);});
+  });
+}
+</script>
 </body>
 </html>

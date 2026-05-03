@@ -49,6 +49,7 @@ var SupabaseProvider = (function() {
     if (!_ready) return Promise.resolve(null);
     var ts = typeof evalObj.ts === 'number' ? evalObj.ts : Date.now();
     var row = { ts: ts, data: evalObj };
+    if (evalObj.user_id) { row.user_id = evalObj.user_id; }
     return _client.from('evaluaciones').insert(row).select('id').single()
       .then(function(res) {
         if (res.error) throw res.error;
@@ -73,6 +74,7 @@ var SupabaseProvider = (function() {
     if (!_ready) return Promise.resolve(null);
     var ts = typeof consObj.ts === 'number' ? consObj.ts : Date.now();
     var row = { ts: ts, data: consObj };
+    if (consObj.user_id) { row.user_id = consObj.user_id; }
     return _client.from('consensos').insert(row).select('id').single()
       .then(function(res) {
         if (res.error) throw res.error;

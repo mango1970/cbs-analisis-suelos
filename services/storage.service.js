@@ -1,16 +1,14 @@
 // ============================================================
 // StorageService — Capa de abstraccion de almacenamiento
 // ============================================================
-// app.js NUNCA importa Firebase directamente.
-// Solo llama a StorageService.*
-// Para migrar de proveedor: cambia firebase.provider.js y
-// la asignacion de Provider en firebase-config.js
+// app.js solo llama a StorageService.*
+// El proveedor concreto se inyecta via setProvider()
 // ============================================================
 
 var StorageService = (function() {
   var _provider = null;
 
-  // Inyectar el proveedor concreto (Firebase, S3, etc.)
+  // Inyectar el proveedor concreto
   function setProvider(p) {
     _provider = p;
   }

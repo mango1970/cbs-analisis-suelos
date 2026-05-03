@@ -1,5 +1,5 @@
-/* CBS Evaluador — Service Worker v2 */
-var CACHE='cbs-v2';
+/* CBS Evaluador — Service Worker v3 */
+var CACHE='cbs-v3';
 
 /* Archivos locales pre-cacheados al instalar */
 var LOCAL=[

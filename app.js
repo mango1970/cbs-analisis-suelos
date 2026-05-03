@@ -2,7 +2,7 @@
    CBS Evaluador — app.js
    Logica principal de la aplicacion
    StorageService (services/storage.service.js) es la unica
-   interfaz de almacenamiento remoto — nunca llamar Firebase aqui
+   interfaz de almacenamiento remoto
    ============================================================ */
 
 /* ========== DATOS DE ESFERAS ========== */
@@ -362,11 +362,11 @@ function renderWormCounter(){
       '</div>'+
       '<button class="worm-btn" onclick="adjWorm(1)">+</button>'+
     '</div>'+
-    '<div class="text-xs text-e-400 space-y-1.5" style="background:#1a1510;border-radius:6px;padding:.6rem">'+
-      '<div class="flex justify-between"><span>Equivalencia:</span><span class="font-bold" style="color:'+clr+'">'+wc.m2+' lombrices/m\u00B2</span></div>'+
-      '<div class="flex justify-between"><span>Biomasa estimada:</span><span class="font-bold" style="color:'+clr+'">'+wc.kg.toLocaleString('es-CL')+' kg/ha</span></div>'+
-      '<div class="flex justify-between"><span>Equivalente a:</span><span class="font-bold" style="color:'+clr+'">'+vacasTexto+'</span></div>'+
-      '<div style="border-top:1px solid #3d3428;margin-top:.4rem;padding-top:.4rem" class="text-e-600 italic">'+
+    '<div class="text-xs md:text-sm text-e-400 space-y-1.5" style="background:#1a1510;border-radius:6px;padding:.6rem" class="md:p-4">'+
+      '<div class="flex justify-between"><span>Equivalencia:</span><span class="font-bold md:text-lg" style="color:'+clr+'">'+wc.m2+' lombrices/m\u00B2</span></div>'+
+      '<div class="flex justify-between"><span>Biomasa estimada:</span><span class="font-bold md:text-lg" style="color:'+clr+'">'+wc.kg.toLocaleString('es-CL')+' kg/ha</span></div>'+
+      '<div class="flex justify-between"><span>Equivalente a:</span><span class="font-bold md:text-lg" style="color:'+clr+'">'+vacasTexto+'</span></div>'+
+      '<div style="border-top:1px solid #3d3428;margin-top:.4rem;padding-top:.4rem" class="text-e-600 italic text-xs md:text-sm">'+
         '<p>Ref. manual CERES (Selles et al. 2006):</p>'+
         '<p>2 lombrices \u2192 50/m\u00B2 \u2192 500 kg/ha \u2192 1 vaca</p>'+
         '<p>8 lombrices \u2192 100/m\u00B2 \u2192 1.000 kg/ha \u2192 2 vacas</p>'+
@@ -389,74 +389,74 @@ function renderSphere(sp){
   var wormHTML='';if(sp.id==='dri')wormHTML=renderWormCounter();
 
   c.innerHTML=
-    '<div class="flex items-center gap-2 mb-1">'+
-      '<div style="width:42px;height:42px;border-radius:10px;background:'+sp.color+'18;border:1px solid '+sp.color+'33;display:flex;align-items:center;justify-content:center">'+
-        '<i class="fas '+sp.icon+' text-lg" style="color:'+sp.color+'"></i></div>'+
-      '<div><h2 class="font-d text-xl font-bold">'+sp.name+'</h2><p class="text-e-600 text-xs">Esfera '+(idx+1)+' de 5</p></div></div>'+
-    '<div class="cd p-3 mb-3" style="border-left:3px solid '+sp.color+'"><p class="text-e-200 text-xs leading-relaxed italic">'+sp.def+'</p></div>'+
+    '<div class="flex items-center gap-2 md:gap-3 mb-1">'+
+      '<div style="width:42px;height:42px;border-radius:10px;background:'+sp.color+'18;border:1px solid '+sp.color+'33;display:flex;align-items:center;justify-content:center" class="md:scale-125">'+
+        '<i class="fas '+sp.icon+' text-lg md:text-2xl" style="color:'+sp.color+'"></i></div>'+
+      '<div><h2 class="font-d text-xl md:text-3xl font-bold">'+sp.name+'</h2><p class="text-e-600 text-xs md:text-sm">Esfera '+(idx+1)+' de 5</p></div></div>'+
+    '<div class="cd p-3 md:p-5 mb-3" style="border-left:3px solid '+sp.color+'"><p class="text-e-200 text-xs md:text-sm leading-relaxed italic">'+sp.def+'</p></div>'+
     /* DIAGRAMAS */
     '<div class="cd mb-3 overflow-hidden">'+
-      '<button onclick="togAcc(\'ref-'+sp.id+'\')" class="w-full flex items-center justify-between p-3 text-left hover:bg-e-900/40 transition">'+
-        '<span class="text-amb font-semibold text-xs"><i class="fas fa-diagram-project mr-1"></i>Diagramas de referencia por condicion</span>'+
-        '<i id="chev-ref-'+sp.id+'" class="fas fa-chevron-down text-e-600 text-xs transition-transform"></i></button>'+
-      '<div id="acc-ref-'+sp.id+'" class="acc"><div class="px-3 pb-3"><div class="ref-grid">'+
+      '<button onclick="togAcc(\'ref-'+sp.id+'\')" class="w-full flex items-center justify-between p-3 md:p-4 text-left hover:bg-e-900/40 transition">'+
+        '<span class="text-amb font-semibold text-xs md:text-sm"><i class="fas fa-diagram-project mr-1"></i>Diagramas de referencia por condicion</span>'+
+        '<i id="chev-ref-'+sp.id+'" class="fas fa-chevron-down text-e-600 text-xs md:text-sm transition-transform"></i></button>'+
+      '<div id="acc-ref-'+sp.id+'" class="acc"><div class="px-3 md:px-4 pb-3 md:pb-4"><div class="ref-grid">'+
         [1,2,3].map(function(lv){var l=sp.lvls[lv];return '<div class="ref-card '+(rating===lv?'sel':'')+'" style="border-color:'+(rating===lv?l.c:'#3d3428')+'" onclick="setR(\''+sp.id+'\','+lv+')">'+refSVG(sp,lv)+
-          '<div style="padding:.4rem"><p class="text-xs font-bold" style="color:'+l.c+'">'+l.n+'</p><p class="text-e-500 text-xs leading-snug" style="font-size:10px">'+l.d+'</p></div></div>';}).join('')+
+          '<div style="padding:.4rem" class="md:p-3"><p class="text-xs md:text-sm font-bold" style="color:'+l.c+'">'+l.n+'</p><p class="text-e-500 text-xs md:text-sm leading-snug" style="font-size:10px">'+l.d+'</p></div></div>';}).join('')+
       '</div></div></div></div>'+
     /* PROCEDIMIENTO */
     '<div class="cd mb-3 overflow-hidden">'+
-      '<button onclick="togAcc(\'proc-'+sp.id+'\')" class="w-full flex items-center justify-between p-3 text-left hover:bg-e-900/40 transition">'+
-        '<span class="text-amb font-semibold text-xs"><i class="fas fa-book-open mr-1"></i>Procedimiento y ayudas</span>'+
-        '<i id="chev-proc-'+sp.id+'" class="fas fa-chevron-down text-e-600 text-xs transition-transform"></i></button>'+
-      '<div id="acc-proc-'+sp.id+'" class="acc"><div class="px-3 pb-3">'+
-        '<ol class="text-e-300 text-xs mb-3 space-y-1.5">'+sp.proc.map(function(p,i){return '<li class="flex gap-1.5"><span class="text-amb font-bold flex-shrink-0">'+(i+1)+'.</span><span>'+p+'</span></li>';}).join('')+'</ol>'+
-        '<div style="background:#1a1510;border-radius:6px;padding:.6rem;border:1px solid #3d3428">'+
-          '<p class="text-e-200 text-xs font-semibold mb-1"><i class="fas fa-eye text-amb mr-1"></i>Ayudas para observar</p>'+
-          '<p class="text-e-400 text-xs leading-relaxed">'+sp.ayudas+'</p></div></div></div></div>'+
+      '<button onclick="togAcc(\'proc-'+sp.id+'\')" class="w-full flex items-center justify-between p-3 md:p-4 text-left hover:bg-e-900/40 transition">'+
+        '<span class="text-amb font-semibold text-xs md:text-sm"><i class="fas fa-book-open mr-1"></i>Procedimiento y ayudas</span>'+
+        '<i id="chev-proc-'+sp.id+'" class="fas fa-chevron-down text-e-600 text-xs md:text-sm transition-transform"></i></button>'+
+      '<div id="acc-proc-'+sp.id+'" class="acc"><div class="px-3 md:px-4 pb-3 md:pb-4">'+
+        '<ol class="text-e-300 text-xs md:text-sm mb-3 space-y-1.5 md:space-y-2">'+sp.proc.map(function(p,i){return '<li class="flex gap-1.5 md:gap-2"><span class="text-amb font-bold flex-shrink-0">'+(i+1)+'.</span><span>'+p+'</span></li>';}).join('')+'</ol>'+
+        '<div style="background:#1a1510;border-radius:6px;padding:.6rem;border:1px solid #3d3428" class="md:p-4">'+
+          '<p class="text-e-200 text-xs md:text-sm font-semibold mb-1"><i class="fas fa-eye text-amb mr-1"></i>Ayudas para observar</p>'+
+          '<p class="text-e-400 text-xs md:text-sm leading-relaxed">'+sp.ayudas+'</p></div></div></div></div>'+
     /* FOTO */
-    '<div class="cd p-3 mb-3">'+
-      '<p class="text-e-200 text-xs font-semibold mb-2"><i class="fas fa-camera text-amb mr-1"></i>Registro fotografico</p>'+
+    '<div class="cd p-3 md:p-5 mb-3">'+
+      '<p class="text-e-200 text-xs md:text-sm font-semibold mb-2"><i class="fas fa-camera text-amb mr-1"></i>Registro fotografico</p>'+
       '<div id="ph-'+sp.id+'">'+
-        (hasPhoto?'<div class="relative"><img src="'+St.photos[sp.id]+'" style="width:100%;border-radius:6px;max-height:180px;object-fit:cover"><button onclick="retake(\''+sp.id+'\',\'ph-'+sp.id+'\')" class="absolute top-1 right-1 bg-black/60 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"><i class="fas fa-redo"></i></button></div>'
-        :'<label class="cb"><i class="fas fa-camera text-xl text-e-500"></i><span class="text-e-500 text-xs">Tomar foto de la '+sp.name+'</span><input type="file" accept="image/*" capture="environment" class="hidden" onchange="photoTaken(event,\''+sp.id+'\')"></label>')+
+        (hasPhoto?'<div class="relative"><img src="'+St.photos[sp.id]+'" style="width:100%;border-radius:6px;max-height:180px;object-fit:cover"><button onclick="retake(\''+sp.id+'\',\'ph-'+sp.id+'\')" class="absolute top-1 right-1 bg-black/60 text-white rounded-full w-6 h-6 md:w-8 md:h-8 flex items-center justify-center text-xs md:text-sm"><i class="fas fa-redo"></i></button></div>'
+        :'<label class="cb"><i class="fas fa-camera text-xl md:text-2xl text-e-500"></i><span class="text-e-500 text-xs md:text-sm">Tomar foto de la '+sp.name+'</span><input type="file" accept="image/*" capture="environment" class="hidden" onchange="photoTaken(event,\''+sp.id+'\')"></label>')+
       '</div>'+
-      (hasPhoto&&!St.imgA[sp.id]?'<button class="bp w-full mt-2 text-xs py-1.5" onclick="runAnalysis(\''+sp.id+'\')"><i class="fas fa-wand-magic-sparkles mr-1"></i>Analizar imagen</button>':'')+
+      (hasPhoto&&!St.imgA[sp.id]?'<button class="bp w-full mt-2 text-xs md:text-sm py-1.5 md:py-2" onclick="runAnalysis(\''+sp.id+'\')"><i class="fas fa-wand-magic-sparkles mr-1"></i>Analizar imagen</button>':'')+
       (St.imgA[sp.id]?renderImgResult(sp.id):'')+
     '</div>'+
     wormHTML+
     /* CHECKLIST */
-    '<div class="cd p-3 mb-3">'+
-      '<p class="text-e-200 text-xs font-semibold mb-2"><i class="fas fa-list-check text-amb mr-1"></i>Criterios de observacion</p>'+
-      '<div class="flex flex-col gap-0.5">'+
+    '<div class="cd p-3 md:p-5 mb-3">'+
+      '<p class="text-e-200 text-xs md:text-sm font-semibold mb-2"><i class="fas fa-list-check text-amb mr-1"></i>Criterios de observacion</p>'+
+      '<div class="flex flex-col gap-0.5 md:gap-1">'+
         sp.checks.map(function(ck,i){var on=!!(St.checks[sp.id]&&St.checks[sp.id][i]);var tgtLvl=ck.l||3;var clr2=tgtLvl===1?'#c44b3f':tgtLvl===2?'#d4a853':'#5a8a4a';
           return '<div class="cli '+(on?'on':'')+'" onclick="togCheck(\''+sp.id+'\','+i+')" style="'+(on?'color:'+clr2:'')+'">'+
             '<div class="cdot">'+(on?'<i class="fas fa-check"></i>':'')+'</div>'+
             '<span class="flex-1">'+ck.t+'</span>'+
-            '<span class="text-e-700" style="font-size:9px">'+(tgtLvl===1?'\u2192Pobre':tgtLvl===2?'\u2192Regular':'\u2192Buena')+'</span></div>';}).join('')+
+            '<span class="text-e-700 text-xs md:text-sm" style="font-size:9px">'+(tgtLvl===1?'\u2192Pobre':tgtLvl===2?'\u2192Regular':'\u2192Buena')+'</span></div>';}).join('')+
       '</div></div>'+
     /* SUGERENCIA */
     (sug?'<div class="sugb mb-3">'+
       '<div class="flex items-center justify-between mb-2">'+
-        '<p class="text-amb text-xs font-semibold"><i class="fas fa-lightbulb mr-1"></i>Sugerencia combinada</p>'+
-        '<span class="text-xs font-bold" style="color:'+sp.lvls[sug.level].c+'">'+sp.lvls[sug.level].n+' condicion</span></div>'+
+        '<p class="text-amb text-xs md:text-sm font-semibold"><i class="fas fa-lightbulb mr-1"></i>Sugerencia combinada</p>'+
+        '<span class="text-xs md:text-sm font-bold" style="color:'+sp.lvls[sug.level].c+'">'+sp.lvls[sug.level].n+' condicion</span></div>'+
       '<div class="cfb mb-2"><div class="cff" style="width:'+sug.conf+'%;background:'+(sug.conf>50?'#5a8a4a':sug.conf>30?'#d4a853':'#c44b3f')+'"></div></div>'+
-      '<p class="text-e-500 text-xs">Confianza: '+sug.conf+'% \u2014 Basada en: '+sug.sources.join(' + ')+'</p>'+
-      (sug.reasons.length?'<div class="mt-2 space-y-0.5">'+sug.reasons.map(function(r){return '<p class="text-e-400" style="font-size:10px">\u2022 '+r+'</p>';}).join('')+'</div>':'')+
-      '<p class="text-e-600 text-xs mt-2 italic">Sugerencia orientativa. Confirme con su observacion directa.</p></div>':'')+
+      '<p class="text-e-500 text-xs md:text-sm">Confianza: '+sug.conf+'% \u2014 Basada en: '+sug.sources.join(' + ')+'</p>'+
+      (sug.reasons.length?'<div class="mt-2 space-y-0.5">'+sug.reasons.map(function(r){return '<p class="text-e-400 text-xs md:text-sm" style="font-size:10px">\u2022 '+r+'</p>';}).join('')+'</div>':'')+
+      '<p class="text-e-600 text-xs md:text-sm mt-2 italic">Sugerencia orientativa. Confirme con su observacion directa.</p></div>':'')+
     /* NOTAS */
-    '<div class="cd p-3 mb-3">'+
-      '<p class="text-e-200 text-xs font-semibold mb-1"><i class="fas fa-pen text-amb mr-1"></i>Observaciones</p>'+
+    '<div class="cd p-3 md:p-5 mb-3">'+
+      '<p class="text-e-200 text-xs md:text-sm font-semibold mb-1"><i class="fas fa-pen text-amb mr-1"></i>Observaciones</p>'+
       '<textarea id="nt-'+sp.id+'" class="finp" rows="2" placeholder="Registra lo que observes...">'+note+'</textarea></div>'+
     /* VALORACION */
-    '<div class="cd p-3 mb-5">'+
-      '<p class="text-e-200 text-xs font-semibold mb-2"><i class="fas fa-star text-amb mr-1"></i>Tu valoracion final</p>'+
-      '<div class="grid grid-cols-3 gap-2">'+
+    '<div class="cd p-3 md:p-5 mb-5">'+
+      '<p class="text-e-200 text-xs md:text-sm font-semibold mb-2"><i class="fas fa-star text-amb mr-1"></i>Tu valoracion final</p>'+
+      '<div class="grid grid-cols-3 gap-2 md:gap-3">'+
         [1,2,3].map(function(lv){var l=sp.lvls[lv];var sel=rating===lv;var sc2=lv===1?'sp':lv===2?'sf':'sg';
           return '<div class="rc '+(sel?sc2:'')+'" onclick="setR(\''+sp.id+'\','+lv+')">'+
             '<div style="width:10px;height:10px;border-radius:50%;background:'+l.c+';margin:0 auto .3rem"></div>'+
-            '<p class="font-bold text-xs" style="color:'+(sel?l.c:'#bfa882')+'">'+l.n+'</p></div>';}).join('')+
+            '<p class="font-bold text-xs md:text-sm" style="color:'+(sel?l.c:'#bfa882')+'">'+l.n+'</p></div>';}).join('')+
       '</div></div>'+
-    '<div class="flex gap-2">'+
+    '<div class="flex gap-2 md:gap-3">'+
       '<button class="bs flex-1" onclick="nav('+(2+idx)+')"><i class="fas fa-arrow-left mr-1"></i>Atras</button>'+
       (idx<4?'<button class="bp flex-1" onclick="nav('+(4+idx)+')">Siguiente<i class="fas fa-arrow-right ml-1"></i></button>'
       :'<button class="bp flex-1" onclick="finishEval()">Ver resumen<i class="fas fa-chart-pie ml-1"></i></button>')+
@@ -466,12 +466,12 @@ function renderSphere(sp){
 function renderImgResult(spId){
   var a=St.imgA[spId];var sp=SP.find(function(s){return s.id===spId;});
   var lvl=a.score<1.8?1:a.score<2.5?2:3;
-  return '<div style="background:#1a1510;border-radius:6px;padding:.6rem;margin-top:.5rem;border:1px solid #3d3428">'+
-    '<p class="text-e-300 text-xs font-semibold mb-1"><i class="fas fa-robot text-amb mr-1"></i>Analisis heuristico de imagen</p>'+
+  return '<div style="background:#1a1510;border-radius:6px;padding:.6rem;margin-top:.5rem;border:1px solid #3d3428" class="md:p-4">'+
+    '<p class="text-e-300 text-xs md:text-sm font-semibold mb-1"><i class="fas fa-robot text-amb mr-1"></i>Analisis heuristico de imagen</p>'+
     '<div class="cfb mb-1"><div class="cff" style="width:'+a.conf+'%;background:'+(a.conf>40?'#5a8a4a':'#d4a853')+'"></div></div>'+
-    '<p class="text-e-500" style="font-size:10px">Confianza: '+a.conf+'% \u2014 Puntaje: '+a.score+'/3 \u2192 <span style="color:'+sp.lvls[lvl].c+';font-weight:700">'+sp.lvls[lvl].n+'</span></p>'+
-    (a.reasons.length?'<div class="mt-1 space-y-0.5">'+a.reasons.map(function(r){return '<p class="text-e-400" style="font-size:9px">\u2022 '+r+'</p>';}).join('')+'</div>':'')+
-    '<p class="text-e-700 mt-1" style="font-size:9px"><i class="fas fa-info-circle mr-0.5"></i>Analisis basado en color/textura. No reemplaza su juicio.</p></div>';
+    '<p class="text-e-500 text-xs md:text-sm" style="font-size:10px">Confianza: '+a.conf+'% \u2014 Puntaje: '+a.score+'/3 \u2192 <span style="color:'+sp.lvls[lvl].c+';font-weight:700">'+sp.lvls[lvl].n+'</span></p>'+
+    (a.reasons.length?'<div class="mt-1 space-y-0.5">'+a.reasons.map(function(r){return '<p class="text-e-400 text-xs md:text-sm" style="font-size:9px">\u2022 '+r+'</p>';}).join('')+'</div>':'')+
+    '<p class="text-e-700 mt-1 text-xs md:text-sm" style="font-size:9px"><i class="fas fa-info-circle mr-0.5"></i>Analisis basado en color/textura. No reemplaza su juicio.</p></div>';
 }
 
 function runAnalysis(spId){
@@ -534,14 +534,14 @@ function finishEval(){
   toast('Evaluacion guardada','s');
   nav(8);
 
-  // Subida en segundo plano a Firebase (si esta configurado)
+  // Subida en segundo plano al proveedor de nube
   if(typeof StorageService!=='undefined' && navigator.onLine){
-    uploadEvalToFirebase(ev,evalId);
+    uploadEvalToCloud(ev,evalId);
   }
 }
 
-/* ========== UPLOAD FIREBASE EN SEGUNDO PLANO ========== */
-function uploadEvalToFirebase(ev,evalId){
+/* ========== UPLOAD A LA NUBE EN SEGUNDO PLANO ========== */
+function uploadEvalToCloud(ev,evalId){
   var uploads=[];
   var photoRefs={};
 
@@ -562,20 +562,20 @@ function uploadEvalToFirebase(ev,evalId){
   });
 
   Promise.all(uploads).then(function(){
-    var firestoreDoc={
+    var cloudDoc={
       id:evalId,site:ev.site,
       photoRefs:photoRefs,// solo rutas relativas — sin dataUrls
       ratings:ev.ratings,notes:ev.notes,checks:ev.checks,
       wormCount:ev.wormCount,ts:ev.ts
     };
-    return StorageService.saveEval(firestoreDoc);
+    return StorageService.saveEval(cloudDoc);
   }).then(function(docId){
     var localEv=St.evals.find(function(e){return e.id===evalId;});
-    if(localEv){localEv.photoRefs=photoRefs;localEv.firestoreId=docId;localEv.synced=true;}
+    if(localEv){localEv.photoRefs=photoRefs;localEv.cloudId=docId;localEv.synced=true;}
     saveLS();
     toast('Sincronizado \u2601','s');
   }).catch(function(err){
-    console.warn('[Firebase] Error al subir evaluacion:',err);
+    console.warn('[CBS] Error al subir evaluacion:',err);
   });
 }
 
@@ -588,8 +588,8 @@ function renderSummary(evParam){
 
   var wormHTML='';
   if(ev.wormCount){var wc=wormCalc(ev.wormCount);var vt=wc.v+' vaca';if(wc.v!==1)vt+='s';vt+='/ha';
-    wormHTML='<div class="cd p-3 mb-3"><p class="text-e-200 text-xs font-semibold mb-1"><i class="fas fa-worm text-amb mr-1"></i>Lombrices contadas</p>'+
-      '<p class="text-e-300 text-sm">'+ev.wormCount+' lombrices = '+wc.m2+'/m\u00B2 = '+wc.kg.toLocaleString('es-CL')+' kg/ha = '+vt+'</p></div>';}
+    wormHTML='<div class="cd p-3 md:p-5 mb-3"><p class="text-e-200 text-xs md:text-sm font-semibold mb-1"><i class="fas fa-worm text-amb mr-1"></i>Lombrices contadas</p>'+
+      '<p class="text-e-300 text-sm md:text-base">'+ev.wormCount+' lombrices = '+wc.m2+'/m\u00B2 = '+wc.kg.toLocaleString('es-CL')+' kg/ha = '+vt+'</p></div>';}
 
   // Recopilar todas las fotos (maneja strings y arrays)
   var allPhotos=[];
@@ -601,35 +601,35 @@ function renderSummary(evParam){
   var photosHTML='';
   if(allPhotos.length){
     var labels={'sh':'Cenital','sd':'Lateral'};
-    photosHTML='<div class="cd p-3 mb-3">'+
-      '<p class="text-e-200 text-xs font-semibold mb-2"><i class="fas fa-images text-amb mr-1"></i>Registro fotografico ('+allPhotos.length+')</p>'+
-      '<div class="grid grid-cols-3 gap-1.5">'+
+    photosHTML='<div class="cd p-3 md:p-5 mb-3">'+
+      '<p class="text-e-200 text-xs md:text-sm font-semibold mb-2"><i class="fas fa-images text-amb mr-1"></i>Registro fotografico ('+allPhotos.length+')</p>'+
+      '<div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1.5 md:gap-2">'+
       allPhotos.map(function(p){
         var _sp=SP.find(function(s){return s.id===p.key;});var lbl=labels[p.key]||(_sp?_sp.name:'');
         return '<div style="position:relative"><img src="'+p.url+'" style="width:100%;border-radius:4px;aspect-ratio:1;object-fit:cover">'+
-          (lbl?'<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.6);font-size:8px;color:#f5efe6;text-align:center;padding:2px;border-radius:0 0 4px 4px">'+lbl+'</div>':'')+
+          (lbl?'<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.6);font-size:8px;color:#f5efe6;text-align:center;padding:2px;border-radius:0 0 4px 4px" class="md:text-xs">'+lbl+'</div>':'')+
           '</div>';}).join('')+'</div></div>';
   }
 
   // Estado de sync
   var syncHTML='';
   if(ev.synced){syncHTML='<div style="display:inline-flex;align-items:center;gap:.3rem;background:rgba(90,138,74,.1);border:1px solid rgba(90,138,74,.25);border-radius:20px;padding:.2rem .6rem;font-size:10px;color:#5a8a4a"><i class="fas fa-cloud-arrow-up"></i>Sincronizado</div>';}
-  else if(typeof FIREBASE_ENABLED!=='undefined'&&FIREBASE_ENABLED){syncHTML='<div style="display:inline-flex;align-items:center;gap:.3rem;background:rgba(212,168,83,.1);border:1px solid rgba(212,168,83,.25);border-radius:20px;padding:.2rem .6rem;font-size:10px;color:#d4a853"><i class="fas fa-clock"></i>Pendiente de sync</div>';}
+  else if(typeof SUPABASE_ENABLED!=='undefined'&&SUPABASE_ENABLED){syncHTML='<div style="display:inline-flex;align-items:center;gap:.3rem;background:rgba(212,168,83,.1);border:1px solid rgba(212,168,83,.25);border-radius:20px;padding:.2rem .6rem;font-size:10px;color:#d4a853"><i class="fas fa-clock"></i>Pendiente de sync</div>';}
 
   c.innerHTML=
-    '<h2 class="font-d text-xl font-bold mb-0.5"><i class="fas fa-chart-pie text-amb mr-2"></i>Resumen</h2>'+
-    '<div class="flex items-center justify-between mb-3">'+
-      '<p class="text-e-500 text-xs">'+(ev.site.ev||'Evaluador')+' \u2014 '+(ev.site.ce||'')+'</p>'+
+    '<h2 class="font-d text-xl md:text-3xl font-bold mb-0.5"><i class="fas fa-chart-pie text-amb mr-2"></i>Resumen</h2>'+
+    '<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 gap-2">'+
+      '<p class="text-e-500 text-xs md:text-sm">'+(ev.site.ev||'Evaluador')+' \u2014 '+(ev.site.ce||'')+'</p>'+
       syncHTML+'</div>'+
-    '<div class="cd p-3 mb-3"><p class="text-e-200 text-xs font-semibold mb-2 text-center">Grafico de Brechas</p>'+
-      '<div class="flex justify-center"><canvas id="rdr1" style="width:300px;height:300px;max-width:100%"></canvas></div></div>'+
-    '<div class="cd p-3 mb-3"><p class="text-e-200 text-xs font-semibold mb-2">Valoraciones</p>'+
-      '<div class="flex flex-col gap-1.5">'+SP.map(function(s){var l=s.lvls[ev.ratings[s.id]];return '<div class="flex items-center gap-2" style="padding:.4rem .6rem;background:'+l.c+'0a;border-radius:6px;border-left:3px solid '+l.c+'">'+
+    '<div class="cd p-3 md:p-5 mb-3"><p class="text-e-200 text-xs md:text-sm font-semibold mb-2 text-center">Grafico de Brechas</p>'+
+      '<div class="flex justify-center"><canvas id="rdr1" style="width:100%;max-width:420px;height:auto;aspect-ratio:1"></canvas></div></div>'+
+    '<div class="cd p-3 md:p-5 mb-3"><p class="text-e-200 text-xs md:text-sm font-semibold mb-2">Valoraciones</p>'+
+      '<div class="flex flex-col gap-1.5 md:gap-2">'+SP.map(function(s){var l=s.lvls[ev.ratings[s.id]];return '<div class="flex items-center gap-2 md:gap-3" style="padding:.4rem .6rem;background:'+l.c+'0a;border-radius:6px;border-left:3px solid '+l.c+'">'+
         '<i class="fas '+s.icon+' w-4 text-center" style="color:'+s.color+'"></i>'+
-        '<span class="text-e-200 text-xs flex-1">'+s.name+'</span>'+
-        '<span class="font-bold text-xs" style="color:'+l.c+'">'+l.n+'</span></div>';}).join('')+'</div></div>'+
+        '<span class="text-e-200 text-xs md:text-sm flex-1">'+s.name+'</span>'+
+        '<span class="font-bold text-xs md:text-sm" style="color:'+l.c+'">'+l.n+'</span></div>';}).join('')+'</div></div>'+
     wormHTML+photosHTML+
-    '<div class="flex flex-col gap-2">'+
+    '<div class="flex flex-col gap-2 md:gap-3">'+
       (fromHist
         ? '<button class="bs" onclick="nav(11)"><i class="fas fa-arrow-left mr-1"></i>Volver al historial</button>'
         : '<button class="bp" onclick="newPart()"><i class="fas fa-user-plus mr-1"></i>Agregar participante</button>'+
@@ -671,17 +671,17 @@ function drawPoly(ctx,cx,cy,mR,sa,step,n,d,fc,sc,lw,dash){
 function renderHistory(){
   var c=document.getElementById('s7');
   if(!Hist.length){
-    c.innerHTML='<div class="max-w-lg mx-auto pt-6 px-4 text-center">'+
-      '<p class="text-e-600 mb-4">No hay evaluaciones guardadas aún.</p>'+
+    c.innerHTML='<div class="max-w-lg md:max-w-2xl mx-auto pt-6 md:pt-12 px-4 text-center">'+
+      '<p class="text-e-600 text-sm md:text-base mb-4">No hay evaluaciones guardadas aún.</p>'+
       '<button class="bp px-6 py-2" onclick="nav(0)"><i class="fas fa-arrow-left mr-1"></i>Inicio</button></div>';
     return;
   }
-  var html='<div class="max-w-lg mx-auto pt-3 px-3 pb-8">'+
+  var html='<div class="max-w-lg md:max-w-3xl mx-auto pt-3 md:pt-8 px-3 pb-8">'+
     '<div class="flex items-center justify-between mb-3">'+
-      '<h2 class="font-d text-lg font-bold"><i class="fas fa-history text-amb mr-2"></i>Historial</h2>'+
-      '<span class="text-e-600 text-xs">'+Hist.length+' evaluación'+(Hist.length!==1?'es':'')+'</span>'+
+      '<h2 class="font-d text-lg md:text-2xl font-bold"><i class="fas fa-history text-amb mr-2"></i>Historial</h2>'+
+      '<span class="text-e-600 text-xs md:text-sm">'+Hist.length+' evaluación'+(Hist.length!==1?'es':'')+'</span>'+
     '</div>'+
-    '<button class="bs text-xs px-3 py-1.5 mb-3" onclick="nav(0)"><i class="fas fa-arrow-left mr-1"></i>Inicio</button>'+
+    '<button class="bs text-xs md:text-sm px-3 py-1.5 mb-3" onclick="nav(0)"><i class="fas fa-arrow-left mr-1"></i>Inicio</button>'+
     '<div class="flex flex-col gap-2">';
   Hist.forEach(function(ev,i){
     var fecha=ev.site&&ev.site.fe?ev.site.fe:(ev.ts?ev.ts.slice(0,10):'—');
@@ -692,13 +692,13 @@ function renderHistory(){
       var clr=r===1?'#c44b3f':r===2?'#d4a853':'#5a8a4a';
       return '<div style="width:11px;height:11px;border-radius:50%;background:'+(r?clr:'#3d3428')+';border:1px solid rgba(255,255,255,.1)"></div>';
     }).join('');
-    html+='<div class="sugb flex items-center gap-3 cursor-pointer" onclick="viewHistEval('+i+')">'+
+    html+='<div class="sugb flex items-center gap-3 md:gap-4 cursor-pointer" onclick="viewHistEval('+i+')">'+
       '<div class="flex-1 min-w-0">'+
-        '<div class="font-bold text-sm text-e-200 truncate">'+eval_name+'</div>'+
-        '<div class="text-e-600 text-xs truncate">'+fecha+' · '+centro+'</div>'+
+        '<div class="font-bold text-sm md:text-base text-e-200 truncate">'+eval_name+'</div>'+
+        '<div class="text-e-600 text-xs md:text-sm truncate">'+fecha+' · '+centro+'</div>'+
       '</div>'+
       '<div class="flex gap-1 flex-shrink-0">'+dots+'</div>'+
-      '<button class="text-e-500 text-xs border border-e-700 px-2 py-1 rounded flex-shrink-0" '+
+      '<button class="text-e-500 text-xs md:text-sm border border-e-700 px-2 py-1 rounded flex-shrink-0" '+
         'onclick="event.stopPropagation();exportEval('+i+')" title="Descargar JSON">'+
         '<i class="fas fa-download"></i></button>'+
     '</div>';
@@ -732,27 +732,27 @@ function exportEval(i){
 /* ========== PARTICIPANTES ========== */
 function renderParticipants(){
   var c=document.getElementById('sp');
-  if(!St.evals.length){c.innerHTML='<h2 class="font-d text-xl font-bold mb-3">Participantes</h2><p class="text-e-500 text-sm">Sin evaluaciones.</p><button class="bp mt-3" onclick="nav(0)">Comenzar</button>';return;}
+  if(!St.evals.length){c.innerHTML='<h2 class="font-d text-xl md:text-2xl font-bold mb-3">Participantes</h2><p class="text-e-500 text-sm md:text-base">Sin evaluaciones.</p><button class="bp mt-3" onclick="nav(0)">Comenzar</button>';return;}
   var tblHTML='';
   if(St.evals.length>=2){
-    tblHTML='<div class="cd p-3 mb-3 overflow-x-auto"><table class="w-full text-xs"><thead><tr class="text-e-500"><th class="text-left pb-1.5 pr-1">Esfera</th>'+
+    tblHTML='<div class="cd p-3 md:p-5 mb-3 overflow-x-auto"><table class="w-full text-xs md:text-sm"><thead><tr class="text-e-500"><th class="text-left pb-1.5 pr-1">Esfera</th>'+
       St.evals.map(function(ev,i){return '<th class="text-center pb-1.5 px-1">'+(ev.site.ev||'P'+(i+1))+'</th>';}).join('')+
       '</tr></thead><tbody>'+
       SP.map(function(s){return '<tr class="border-t border-e-800"><td class="py-1.5 pr-1 text-e-300"><i class="fas '+s.icon+' mr-1" style="color:'+s.color+'"></i>'+s.name+'</td>'+
-        St.evals.map(function(ev){var l=s.lvls[ev.ratings[s.id]];return '<td class="text-center py-1.5 px-1"><span style="background:'+l.c+'1a;color:'+l.c+';padding:1px 6px;border-radius:10px;font-weight:700;font-size:10px">'+l.n+'</span></td>';}).join('')+
+        St.evals.map(function(ev){var l=s.lvls[ev.ratings[s.id]];return '<td class="text-center py-1.5 px-1"><span style="background:'+l.c+'1a;color:'+l.c+';padding:1px 6px;border-radius:10px;font-weight:700;font-size:10px" class="md:text-xs">'+l.n+'</span></td>';}).join('')+
         '</tr>';}).join('')+
       '</tbody></table></div>'+
       '<button class="bp w-full" style="background:linear-gradient(135deg,#5a8a4a,#3a6a2a)" onclick="nav(10)"><i class="fas fa-handshake mr-1"></i>Consenso grupal</button>';
   }else{
-    tblHTML='<div class="cd p-3 text-center"><p class="text-e-500 text-xs mb-2">Se necesitan al menos 2 evaluaciones</p><button class="bp" onclick="newPart()"><i class="fas fa-user-plus mr-1"></i>Agregar participante</button></div>';
+    tblHTML='<div class="cd p-3 md:p-5 text-center"><p class="text-e-500 text-xs md:text-sm mb-2">Se necesitan al menos 2 evaluaciones</p><button class="bp" onclick="newPart()"><i class="fas fa-user-plus mr-1"></i>Agregar participante</button></div>';
   }
   c.innerHTML=
-    '<h2 class="font-d text-xl font-bold mb-0.5"><i class="fas fa-users text-amb mr-2"></i>Participantes</h2>'+
-    '<p class="text-e-500 text-xs mb-3">'+St.evals.length+' evaluacion(es)</p>'+
-    '<div class="cd p-3 mb-3"><div class="flex flex-col gap-1.5">'+
+    '<h2 class="font-d text-xl md:text-3xl font-bold mb-0.5"><i class="fas fa-users text-amb mr-2"></i>Participantes</h2>'+
+    '<p class="text-e-500 text-xs md:text-sm mb-3">'+St.evals.length+' evaluacion(es)</p>'+
+    '<div class="cd p-3 md:p-5 mb-3"><div class="flex flex-col gap-1.5">'+
       St.evals.map(function(ev,i){return '<div style="background:#1a1510;padding:.35rem .6rem;border-radius:16px;display:inline-flex;align-items:center;gap:.4rem">'+
-        '<i class="fas fa-user text-amb text-xs"></i><span class="text-e-200 text-xs">'+(ev.site.ev||'P'+(i+1))+'</span>'+
-        '<span class="text-e-600 text-xs">\u2014 '+(ev.site.ce||'')+'</span></div>';}).join('')+
+        '<i class="fas fa-user text-amb text-xs md:text-sm"></i><span class="text-e-200 text-xs md:text-sm">'+(ev.site.ev||'P'+(i+1))+'</span>'+
+        '<span class="text-e-600 text-xs md:text-sm">\u2014 '+(ev.site.ce||'')+'</span></div>';}).join('')+
     '</div></div>'+tblHTML+
     '<button class="bs w-full mt-2" onclick="nav(0)"><i class="fas fa-home mr-1"></i>Inicio</button>';
 }
@@ -767,26 +767,26 @@ function renderConsensus(){
   var avgData=SP.map(function(s){var sum=St.evals.reduce(function(a,ev){return a+ev.ratings[s.id];},0);return +(sum/St.evals.length).toFixed(2);});
   var consData=SP.map(function(s){return St.cons[s.id];});
   c.innerHTML=
-    '<h2 class="font-d text-xl font-bold mb-0.5"><i class="fas fa-handshake text-amb mr-2"></i>Consenso Grupal</h2>'+
-    '<p class="text-e-500 text-xs mb-4">'+St.evals.length+' participantes \u2014 Discutan y determinen la valoracion consensuada</p>'+
-    '<div class="cd p-3 mb-3"><p class="text-e-200 text-xs font-semibold mb-2 text-center">Grafico de Brechas</p>'+
-      '<div class="flex justify-center"><canvas id="rdr-c" style="width:320px;height:320px;max-width:100%"></canvas></div>'+
-      '<div class="flex justify-center gap-4 mt-2 text-xs">'+
+    '<h2 class="font-d text-xl md:text-3xl font-bold mb-0.5"><i class="fas fa-handshake text-amb mr-2"></i>Consenso Grupal</h2>'+
+    '<p class="text-e-500 text-xs md:text-sm mb-4">'+St.evals.length+' participantes \u2014 Discutan y determinen la valoracion consensuada</p>'+
+    '<div class="cd p-3 md:p-5 mb-3"><p class="text-e-200 text-xs md:text-sm font-semibold mb-2 text-center">Grafico de Brechas</p>'+
+      '<div class="flex justify-center"><canvas id="rdr-c" style="width:100%;max-width:450px;height:auto;aspect-ratio:1"></canvas></div>'+
+      '<div class="flex justify-center gap-4 mt-2 text-xs md:text-sm">'+
         '<span class="flex items-center gap-1"><span style="width:14px;height:2px;background:rgba(90,138,74,.85);display:inline-block;border-radius:1px"></span><span class="text-e-500">Consenso</span></span>'+
         '<span class="flex items-center gap-1"><span style="width:14px;height:0;border-top:2px dashed rgba(212,168,83,.6);display:inline-block"></span><span class="text-e-500">Promedio</span></span></div></div>'+
-    '<div class="flex flex-col gap-3 mb-5">'+SP.map(function(s){
+    '<div class="flex flex-col gap-3 md:gap-4 mb-5">'+SP.map(function(s){
       var d={1:0,2:0,3:0};St.evals.forEach(function(ev){d[ev.ratings[s.id]]++;});
       var tot=St.evals.length;var cv=St.cons[s.id];
-      return '<div class="cd p-3"><div class="flex items-center gap-2 mb-2"><i class="fas '+s.icon+'" style="color:'+s.color+'"></i><span class="font-bold text-e-100 text-sm">'+s.name+'</span></div>'+
+      return '<div class="cd p-3 md:p-5"><div class="flex items-center gap-2 mb-2"><i class="fas '+s.icon+'" style="color:'+s.color+'"></i><span class="font-bold text-e-100 text-sm md:text-base">'+s.name+'</span></div>'+
         '<div class="flex flex-col gap-1 mb-2">'+[1,2,3].map(function(lv){var l=s.lvls[lv];var pct=tot?(d[lv]/tot*100):0;
-          return '<div class="flex items-center gap-1.5"><span class="text-xs w-12 text-right" style="color:'+l.c+'">'+l.n+'</span>'+
-            '<div class="flex-1 bg-e-950 rounded-full overflow-hidden" style="height:20px"><div style="width:'+Math.max(pct,3)+'%;height:100%;background:'+l.c+';border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#1a1510;transition:width .5s">'+(d[lv]||'')+'</div></div>'+
-            '<span class="text-e-600 text-xs w-8">'+pct.toFixed(0)+'%</span></div>';}).join('')+'</div>'+
-        '<p class="text-e-600 text-xs mb-1.5">Consenso:</p>'+
-        '<div class="grid grid-cols-3 gap-1.5">'+[1,2,3].map(function(lv){var l=s.lvls[lv];var sel=cv===lv;var sc2=lv===1?'sp':lv===2?'sf':'sg';
-          return '<div class="rc '+(sel?sc2:'')+'" onclick="setCons(\''+s.id+'\','+lv+')" style="padding:.4rem"><p class="font-bold text-xs" style="color:'+(sel?l.c:'#bfa882')+'">'+l.n+'</p></div>';}).join('')+'</div></div>';
+          return '<div class="flex items-center gap-1.5 md:gap-2"><span class="text-xs md:text-sm w-12 text-right" style="color:'+l.c+'">'+l.n+'</span>'+
+            '<div class="flex-1 bg-e-950 rounded-full overflow-hidden" style="height:20px"><div style="width:'+Math.max(pct,3)+'%;height:100%;background:'+l.c+';border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#1a1510;transition:width .5s" class="md:text-xs">'+(d[lv]||'')+'</div></div>'+
+            '<span class="text-e-600 text-xs md:text-sm w-8">'+pct.toFixed(0)+'%</span></div>';}).join('')+'</div>'+
+        '<p class="text-e-600 text-xs md:text-sm mb-1.5">Consenso:</p>'+
+        '<div class="grid grid-cols-3 gap-1.5 md:gap-3">'+[1,2,3].map(function(lv){var l=s.lvls[lv];var sel=cv===lv;var sc2=lv===1?'sp':lv===2?'sf':'sg';
+          return '<div class="rc '+(sel?sc2:'')+'" onclick="setCons(\''+s.id+'\','+lv+')" style="padding:.4rem"><p class="font-bold text-xs md:text-sm" style="color:'+(sel?l.c:'#bfa882')+'">'+l.n+'</p></div>';}).join('')+'</div></div>';
     }).join('')+'</div>'+
-    '<div class="flex flex-col gap-2">'+
+    '<div class="flex flex-col gap-2 md:gap-3">'+
       '<button class="bp" onclick="saveCons()"><i class="fas fa-check-double mr-1"></i>Guardar consenso</button>'+
       '<button class="bs" onclick="nav(9)"><i class="fas fa-arrow-left mr-1"></i>Volver</button></div>';
   setTimeout(function(){drawRadar('rdr-c',consData,avgData);},80);

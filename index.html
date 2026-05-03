@@ -16,70 +16,92 @@ tailwind.config={theme:{extend:{colors:{e:{50:'#f5efe6',100:'#e8dfcf',200:'#d4c5
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;font-family:'Source Sans 3',sans-serif;background:#1a1510;color:#f5efe6;overflow-x:hidden}
+@media(min-width:768px){body{font-size:17px}}
 .scr{display:none;min-height:100vh;padding:1rem 1rem 4rem;animation:fi .25s ease}.scr.on{display:block}
+@media(min-width:768px){.scr{padding:2rem 2rem 5rem}}
 @keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 #bgl{position:fixed;inset:0;z-index:-1;background:linear-gradient(150deg,#1a1510,#2a1f14 40%,#1e1812 70%,#231a10)}
 .bl{position:fixed;border-radius:50%;filter:blur(100px);opacity:.1;z-index:-1}
 .b1{width:350px;height:350px;background:#d4a853;top:-100px;left:-80px;animation:bm 20s ease-in-out infinite}
+@media(min-width:768px){.b1{width:600px;height:600px;top:-200px;left:-150px}}
 .b2{width:260px;height:260px;background:#5a8a4a;bottom:-70px;right:-70px;animation:bm 17s ease-in-out infinite reverse}
+@media(min-width:768px){.b2{width:450px;height:450px;bottom:-120px;right:-120px}}
 @keyframes bm{0%,100%{transform:translate(0)}50%{transform:translate(45px,30px)}}
 /* Progress bar */
 .pt{height:3px;background:#3d3428;border-radius:2px;overflow:hidden}
+@media(min-width:768px){.pt{height:4px}}
 .pf{height:100%;background:linear-gradient(90deg,#d4a853,#5a8a4a);border-radius:2px;transition:width .5s}
 /* Progress dots */
 .sd{width:8px;height:8px;border-radius:50%;background:#3d3428;border:1px solid #5a4725;transition:.25s;flex-shrink:0}
+@media(min-width:768px){.sd{width:10px;height:10px}}
 .sd.on{background:#d4a853;border-color:#d4a853;box-shadow:0 0 6px rgba(212,168,83,.5);transform:scale(1.35)}
 .sd.ok{background:#5a8a4a;border-color:#5a8a4a}
 /* Cards */
 .cd{background:rgba(42,35,24,.88);border:1px solid #3d3428;border-radius:12px;backdrop-filter:blur(8px)}
+@media(min-width:768px){.cd{border-radius:16px}}
 /* Rating cards */
 .rc{cursor:pointer;border:2px solid #3d3428;border-radius:10px;padding:.55rem .3rem;text-align:center;transition:.2s;background:rgba(42,35,24,.5);user-select:none}
+@media(min-width:768px){.rc{padding:.9rem .5rem;border-radius:14px}}
 .rc:hover{border-color:#a68b5c}.rc.sp{border-color:#c44b3f;background:rgba(196,75,63,.12)}.rc.sf{border-color:#d4a853;background:rgba(212,168,83,.12)}.rc.sg{border-color:#5a8a4a;background:rgba(90,138,74,.12)}
 /* Camera button */
 .cb{display:flex;flex-direction:column;align-items:center;gap:.35rem;padding:.8rem;border:2px dashed #5a4725;border-radius:10px;cursor:pointer;transition:.2s;background:rgba(90,71,37,.06)}
+@media(min-width:768px){.cb{padding:1.4rem}}
 .cb:hover{border-color:#d4a853}.cb.hp{border-style:solid;border-color:#5a8a4a;background:rgba(90,138,74,.06)}
 /* Multi-photo gallery (s2) */
 .photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+@media(min-width:768px){.photo-grid{grid-template-columns:repeat(5,1fr);gap:10px}}
 .photo-thumb{position:relative;aspect-ratio:1;border-radius:6px;overflow:hidden;background:#1a1510}
 .photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .photo-rm{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.65);color:#f5efe6;border:none;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:9px;cursor:pointer;padding:0;line-height:1}
+@media(min-width:768px){.photo-rm{width:28px;height:28px;font-size:12px;top:6px;right:6px}}
 .photo-add{aspect-ratio:1;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;border:2px dashed #5a4725;cursor:pointer;transition:.2s;background:rgba(90,71,37,.06)}
 .photo-add:hover{border-color:#d4a853;background:rgba(212,168,83,.04)}
 /* Accordion */
 .acc{max-height:0;overflow:hidden;transition:max-height .4s ease}.acc.open{max-height:4000px}
 /* Buttons */
 .bp{background:linear-gradient(135deg,#d4a853,#b8923f);color:#1a1510;font-weight:700;padding:.65rem 1.4rem;border-radius:8px;border:none;cursor:pointer;font-size:.92rem;transition:.2s;font-family:inherit}
+@media(min-width:768px){.bp{padding:.85rem 2rem;font-size:1.05rem;border-radius:10px}}
 .bp:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(212,168,83,.2)}
 .bp:active{transform:translateY(0)}
 .bs{background:transparent;color:#d4c5a8;border:1px solid #5a4725;padding:.65rem 1.4rem;border-radius:8px;cursor:pointer;font-size:.92rem;transition:.2s;font-family:inherit}
+@media(min-width:768px){.bs{padding:.85rem 2rem;font-size:1.05rem;border-radius:10px}}
 .bs:hover{border-color:#a68b5c;color:#f5efe6}
 /* Inputs */
 .finp{width:100%;background:#1a1510;border:1px solid #3d3428;border-radius:8px;padding:.5rem .7rem;color:#f5efe6;font-family:inherit;font-size:.9rem;transition:border .2s}
+@media(min-width:768px){.finp{padding:.65rem .9rem;font-size:1rem}}
 .finp:focus{outline:none;border-color:#d4a853}.finp::placeholder{color:#745d30}
 .flb{display:block;font-size:.78rem;color:#bfa882;margin-bottom:.2rem;font-weight:600}
+@media(min-width:768px){.flb{font-size:.85rem;margin-bottom:.4rem}}
 /* Toast */
 .toast{padding:.6rem .9rem;border-radius:8px;color:#f5efe6;font-size:.82rem;animation:tin .2s;margin-bottom:.4rem;backdrop-filter:blur(8px)}
+@media(min-width:768px){.toast{padding:.8rem 1.2rem;font-size:.95rem}}
 .toast-i{background:rgba(212,168,83,.88)}.toast-s{background:rgba(90,138,74,.88)}.toast-e{background:rgba(196,75,63,.88)}
 @keyframes tin{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:translateX(0)}}
 .tout{animation:tout .2s forwards}@keyframes tout{to{opacity:0;transform:translateX(14px)}}
 /* Checklist */
 .cli{display:flex;align-items:center;gap:.45rem;padding:.35rem .5rem;border-radius:7px;cursor:pointer;transition:.15s;border:1px solid transparent;font-size:.78rem}
+@media(min-width:768px){.cli{padding:.5rem .7rem;font-size:.88rem}}
 .cli:hover{background:rgba(212,168,83,.05);border-color:#3d3428}
 .cli.on{background:rgba(212,168,83,.08);border-color:#d4a853}
 .cdot{width:12px;height:12px;border-radius:50%;border:2px solid #5a4725;transition:.15s;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:6px;color:transparent}
+@media(min-width:768px){.cdot{width:16px;height:16px;font-size:8px}}
 .cli.on .cdot{border-color:#d4a853;color:#d4a853}
 /* Suggestion box */
 .sugb{background:linear-gradient(135deg,rgba(212,168,83,.07),rgba(90,138,74,.07));border:1px solid rgba(212,168,83,.18);border-radius:10px;padding:.7rem}
+@media(min-width:768px){.sugb{padding:1rem;border-radius:14px}}
 .cfb{height:4px;border-radius:2px;background:#3d3428;overflow:hidden}.cff{height:100%;border-radius:2px;transition:width .5s}
 /* Worm counter */
 .worm-btn{width:52px;height:52px;border-radius:50%;border:2px solid #5a4725;background:rgba(90,71,37,.1);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:900;cursor:pointer;transition:.2s;font-family:inherit;color:#bfa882}
+@media(min-width:768px){.worm-btn{width:64px;height:64px;font-size:1.8rem}}
 .worm-btn:active{transform:scale(.9);background:rgba(212,168,83,.15)}
 /* Reference grid */
 .ref-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
+@media(min-width:768px){.ref-grid{gap:.8rem}}
 .ref-card{border:1px solid #3d3428;border-radius:8px;overflow:hidden;transition:.2s;cursor:pointer}
 .ref-card:hover{border-color:#a68b5c}.ref-card.sel{border-width:2px}
 @media(max-width:380px){.ref-grid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:0s!important;transition-duration:0s!important}}
+canvas[id^="rdr"]{display:block;max-width:100%}
 </style>
 </head>
 <body>
@@ -89,15 +111,15 @@ body{margin:0;font-family:'Source Sans 3',sans-serif;background:#1a1510;color:#f
 <!-- ========== PANTALLA 0: INICIO ========== -->
 <div id="s0" class="scr on">
 <div class="flex flex-col items-center justify-center min-h-screen text-center px-2">
-  <div class="mb-5" style="width:85px;height:85px;border-radius:50%;background:linear-gradient(135deg,#5a8a4a,#3a6a2a);display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(90,138,74,.2)">
-    <i class="fas fa-seedling text-3xl text-e-50"></i>
+  <div class="mb-5 md:mb-8" style="width:85px;height:85px;border-radius:50%;background:linear-gradient(135deg,#5a8a4a,#3a6a2a);display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(90,138,74,.2)">
+    <i class="fas fa-seedling text-3xl md:text-4xl text-e-50"></i>
   </div>
-  <h1 class="font-d text-3xl md:text-4xl font-black mb-2">Condición Biológica<br>del Suelo</h1>
-  <p class="text-e-300 text-sm mb-0.5">Metodología in situ e in visu</p>
-  <p class="text-e-600 text-xs mb-4">Manual CERES — Sabaini & Avila 2015</p>
-  <div class="cd p-4 mb-5 text-left max-w-md w-full">
-    <p class="text-e-200 text-sm leading-relaxed mb-3">Evalua la vida del suelo con <strong class="text-amb">5 esferas</strong>, registro fotografico con analisis heuristico, checklist de criterios y valoracion participativa.</p>
-    <div class="flex flex-col gap-1.5 text-xs text-e-300">
+  <h1 class="font-d text-3xl md:text-5xl font-black mb-2">Condición Biológica<br>del Suelo</h1>
+  <p class="text-e-300 text-sm md:text-lg mb-0.5">Metodología in situ e in visu</p>
+  <p class="text-e-600 text-xs md:text-sm mb-4">Manual CERES — Sabaini & Avila 2015</p>
+  <div class="cd p-4 md:p-6 mb-5 md:mb-6 text-left max-w-md md:max-w-xl w-full">
+    <p class="text-e-200 text-sm md:text-base leading-relaxed mb-3">Evalua la vida del suelo con <strong class="text-amb">5 esferas</strong>, registro fotografico con analisis heuristico, checklist de criterios y valoracion participativa.</p>
+    <div class="flex flex-col gap-1.5 text-xs md:text-sm text-e-300">
       <div class="flex items-center gap-2"><i class="fas fa-camera text-amb w-4 text-center"></i>Registro fotografico (hasta 3 fotos por vista)</div>
       <div class="flex items-center gap-2"><i class="fas fa-list-check text-amb w-4 text-center"></i>Checklist de criterios del manual</div>
       <div class="flex items-center gap-2"><i class="fas fa-diagram-project text-amb w-4 text-center"></i>Diagramas de referencia por condicion</div>
@@ -105,8 +127,8 @@ body{margin:0;font-family:'Source Sans 3',sans-serif;background:#1a1510;color:#f
       <div class="flex items-center gap-2"><i class="fas fa-chart-pie text-amb w-4 text-center"></i>Grafico de brechas</div>
     </div>
   </div>
-  <button class="bp text-base px-6 py-2.5" onclick="nav(1)">Comenzar evaluacion</button>
-  <button class="bs text-sm px-5 py-2 mt-2" onclick="nav(11)"><i class="fas fa-history mr-1"></i>Ver historial</button>
+  <button class="bp text-base md:text-lg px-6 py-2.5 md:py-3 md:px-8" onclick="nav(1)">Comenzar evaluacion</button>
+  <button class="bs text-sm md:text-base px-5 py-2 mt-2" onclick="nav(11)"><i class="fas fa-history mr-1"></i>Ver historial</button>
   <div id="resume-btn"></div>
   <div id="online-badge" class="flex items-center gap-1 mt-3 text-xs" style="color:#5a8a4a">
     <i class="fas fa-wifi"></i><span>En linea</span>
@@ -122,70 +144,70 @@ body{margin:0;font-family:'Source Sans 3',sans-serif;background:#1a1510;color:#f
 </div>
 
 <!-- ========== PANTALLA 1: DATOS DEL SITIO ========== -->
-<div id="s1" class="scr"><div class="max-w-lg mx-auto pt-3">
-  <h2 class="font-d text-xl font-bold mb-0.5"><i class="fas fa-map-pin text-amb mr-2"></i>Datos del Sitio</h2>
-  <p class="text-e-500 text-xs mb-4">Informacion de la unidad de manejo</p>
-  <div class="cd p-4 flex flex-col gap-3">
+<div id="s1" class="scr"><div class="max-w-lg md:max-w-3xl mx-auto pt-3 md:pt-8">
+  <h2 class="font-d text-xl md:text-3xl font-bold mb-0.5"><i class="fas fa-map-pin text-amb mr-2"></i>Datos del Sitio</h2>
+  <p class="text-e-500 text-xs md:text-sm mb-4">Informacion de la unidad de manejo</p>
+  <div class="cd p-4 md:p-6 flex flex-col gap-3 md:gap-4">
     <div><label class="flb">Evaluador</label><input id="i-ev" class="finp" placeholder="Nombre del evaluador"></div>
     <div><label class="flb">Centro productivo</label><input id="i-ce" class="finp" placeholder="Ej: Fundo Los Maitenes"></div>
     <div><label class="flb">Unidad de manejo</label><input id="i-un" class="finp" placeholder="Ej: Cerezo 2006 — entre hileras"></div>
-    <div class="grid grid-cols-2 gap-2">
+    <div class="grid grid-cols-2 gap-2 md:gap-4">
       <div><label class="flb">Fecha</label><input id="i-fe" type="date" class="finp"></div>
       <div><label class="flb">Ultimo riego/lluvia</label><input id="i-ri" type="date" class="finp"></div>
     </div>
-    <div class="grid grid-cols-2 gap-2">
+    <div class="grid grid-cols-2 gap-2 md:gap-4">
       <div><label class="flb">Zona observacion</label><input id="i-zo" class="finp" placeholder="Ej: Entre hilera"></div>
       <div><label class="flb">Punto (hilera/planta)</label><input id="i-pu" class="finp" placeholder="Ej: H-12, P-5"></div>
     </div>
     <div>
       <label class="flb">Ubicacion GPS del punto de muestreo</label>
-      <button id="geo-btn" class="bs w-full text-sm py-2" onclick="captureGeo()">
+      <button id="geo-btn" class="bs w-full text-sm md:text-base py-2" onclick="captureGeo()">
         <i class="fas fa-location-dot mr-1"></i>Capturar ubicacion GPS
       </button>
       <div id="geo-display" class="mt-1.5" style="min-height:18px">
-        <span class="text-e-700 text-xs">No capturada — presiona el botón estando en el punto exacto</span>
+        <span class="text-e-700 text-xs md:text-sm">No capturada — presiona el botón estando en el punto exacto</span>
       </div>
     </div>
   </div>
-  <div class="flex gap-2 mt-5">
+  <div class="flex gap-2 md:gap-3 mt-5 md:mt-6">
     <button class="bs flex-1" onclick="nav(0)"><i class="fas fa-arrow-left mr-1"></i>Atras</button>
     <button class="bp flex-1" onclick="saveSite();nav(2)">Siguiente<i class="fas fa-arrow-right ml-1"></i></button>
   </div>
 </div></div>
 
 <!-- ========== PANTALLA 2: FOTOS DEL SITIO (MULTI-FOTO) ========== -->
-<div id="s2" class="scr"><div class="max-w-lg mx-auto pt-3">
-  <h2 class="font-d text-xl font-bold mb-0.5"><i class="fas fa-image text-amb mr-2"></i>Fotos del Sitio</h2>
-  <p class="text-e-500 text-xs mb-4">Achate y registra hasta 3 fotos por plano — horizontal (cenital) y diagonal</p>
-  <div class="flex flex-col gap-3">
-    <div class="cd p-3">
-      <p class="text-xs text-e-300 font-semibold mb-1"><i class="fas fa-arrow-down-short-wide text-amb mr-1"></i>Plano Cenital (horizontal)</p>
-      <p class="text-e-600 text-xs mb-2">Vista desde arriba — achatate sobre el suelo</p>
+<div id="s2" class="scr"><div class="max-w-lg md:max-w-3xl mx-auto pt-3 md:pt-8">
+  <h2 class="font-d text-xl md:text-3xl font-bold mb-0.5"><i class="fas fa-image text-amb mr-2"></i>Fotos del Sitio</h2>
+  <p class="text-e-500 text-xs md:text-sm mb-4">Achate y registra hasta 3 fotos por plano — horizontal (cenital) y diagonal</p>
+  <div class="flex flex-col md:flex-row gap-3 md:gap-4">
+    <div class="cd p-3 md:p-4 flex-1">
+      <p class="text-xs md:text-sm text-e-300 font-semibold mb-1"><i class="fas fa-arrow-down-short-wide text-amb mr-1"></i>Plano Cenital (horizontal)</p>
+      <p class="text-e-600 text-xs md:text-sm mb-2">Vista desde arriba — achatate sobre el suelo</p>
       <div id="ph-sh"></div>
     </div>
-    <div class="cd p-3">
-      <p class="text-xs text-e-300 font-semibold mb-1"><i class="fas fa-arrows-left-right-to-line text-amb mr-1"></i>Plano Lateral (diagonal)</p>
-      <p class="text-e-600 text-xs mb-2">Vista lateral inclinada mostrando superficie y perfil</p>
+    <div class="cd p-3 md:p-4 flex-1">
+      <p class="text-xs md:text-sm text-e-300 font-semibold mb-1"><i class="fas fa-arrows-left-right-to-line text-amb mr-1"></i>Plano Lateral (diagonal)</p>
+      <p class="text-e-600 text-xs md:text-sm mb-2">Vista lateral inclinada mostrando superficie y perfil</p>
       <div id="ph-sd"></div>
     </div>
   </div>
-  <div class="flex gap-2 mt-5">
+  <div class="flex gap-2 md:gap-3 mt-5 md:mt-6">
     <button class="bs flex-1" onclick="nav(1)"><i class="fas fa-arrow-left mr-1"></i>Atras</button>
     <button class="bp flex-1" onclick="nav(3)">Siguiente<i class="fas fa-arrow-right ml-1"></i></button>
   </div>
 </div></div>
 
 <!-- ========== PANTALLA 3: ESFERAS (renderizado dinamico) ========== -->
-<div id="s3" class="scr"><div class="max-w-lg mx-auto pt-3" id="sc"></div></div>
+<div id="s3" class="scr"><div class="max-w-lg md:max-w-3xl mx-auto pt-3 md:pt-8" id="sc"></div></div>
 
 <!-- ========== PANTALLA 4: RESUMEN ========== -->
-<div id="s4" class="scr"><div class="max-w-lg mx-auto pt-3" id="sm"></div></div>
+<div id="s4" class="scr"><div class="max-w-lg md:max-w-3xl mx-auto pt-3 md:pt-8" id="sm"></div></div>
 
 <!-- ========== PANTALLA 5: PARTICIPANTES ========== -->
-<div id="s5" class="scr"><div class="max-w-lg mx-auto pt-3" id="sp"></div></div>
+<div id="s5" class="scr"><div class="max-w-lg md:max-w-3xl mx-auto pt-3 md:pt-8" id="sp"></div></div>
 
 <!-- ========== PANTALLA 6: CONSENSO ========== -->
-<div id="s6" class="scr"><div class="max-w-2xl mx-auto pt-3" id="sx"></div></div>
+<div id="s6" class="scr"><div class="max-w-2xl md:max-w-5xl mx-auto pt-3 md:pt-8" id="sx"></div></div>
 
 <!-- ========== PANTALLA 7: HISTORIAL ========== -->
 <div id="s7" class="scr"></div>
@@ -200,12 +222,12 @@ body{margin:0;font-family:'Source Sans 3',sans-serif;background:#1a1510;color:#f
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <!-- Config y capa de servicio -->
-<script src="supabase-config.js?v=2"></script>
-<script src="services/storage.service.js?v=2"></script>
-<script src="services/supabase.provider.js?v=2"></script>
+<script src="supabase-config.js?v=3"></script>
+<script src="services/storage.service.js?v=3"></script>
+<script src="services/supabase.provider.js?v=3"></script>
 
 <!-- Logica principal -->
-<script src="app.js?v=2"></script>
+<script src="app.js?v=3"></script>
 
 <!-- PWA Service Worker -->
 <script>

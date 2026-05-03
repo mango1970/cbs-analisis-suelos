@@ -7,8 +7,8 @@
 // ============================================================
 
 var SUPABASE_CONFIG = {
-  url:     "https://bxszkhdhdeofakkygkph.supabase.co",
-  anonKey: "sb_publishable_VKMqN0WjrU3kOrVIbs6fZg_S94tJ-fr"
+  url:     "https://dahgkozkfgsjjvxtwbpj.supabase.co",
+  anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhaGdrb3prZmdzamp2eHR3YnBqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3NTA3MDgsImV4cCI6MjA5MzMyNjcwOH0.P9w9EzxBqNIfpqSLNypo0Dd71bLqKtNuiLvRGpEFkkE"
 };
 
 // Cambia a true solo cuando hayas completado la configuracion anterior

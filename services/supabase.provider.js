@@ -80,7 +80,43 @@ var SupabaseProvider = (function() {
       });
   }
 
-  return { init, upload, getUrl, saveEval, loadEvals, saveCons };
+  // ========== AUTH ==========
+
+  // Obtiene el usuario actual (null si no hay sesion)
+  function getUser() {
+    if (!_ready) return Promise.resolve(null);
+    return _client.auth.getSession().then(function(res) {
+      return res.data.session ? res.data.session.user : null;
+    });
+  }
+
+  // Registro con email/password
+  function signUp(email, password) {
+    if (!_ready) return Promise.resolve({ error: { message: 'No inicializado' } });
+    return _client.auth.signUp({ email: email, password: password });
+  }
+
+  // Inicio de sesion con email/password
+  function signIn(email, password) {
+    if (!_ready) return Promise.resolve({ error: { message: 'No inicializado' } });
+    return _client.auth.signInWithPassword({ email: email, password: password });
+  }
+
+  // Cerrar sesion
+  function signOut() {
+    if (!_ready) return Promise.resolve();
+    return _client.auth.signOut();
+  }
+
+  // Escuchar cambios de sesion
+  function onAuthChange(callback) {
+    if (!_ready) return;
+    _client.auth.onAuthStateChange(function(event, session) {
+      callback(session ? session.user : null);
+    });
+  }
+
+  return { init, upload, getUrl, saveEval, loadEvals, saveCons, getUser, signUp, signIn, signOut, onAuthChange };
 })();
 
 // Auto-inicializar si Supabase esta habilitado

@@ -117,6 +117,119 @@ var St={step:0,site:{ev:'',ce:'',un:'',fe:'',ri:'',zo:'',pu:'',lat:null,lng:null
 SP.forEach(function(sp){St.ratings[sp.id]=null;St.notes[sp.id]='';St.checks[sp.id]={};St.imgA[sp.id]=null;});
 var SLBL=['Datos','Fotos','Detritosfera','Agregatosfera','Drilosfera','Rizosfera','Porosfera','Resumen'];
 
+/* ========== AUTH ========== */
+var AUTH_MODE='login'; // 'login' | 'register'
+var CURRENT_USER=null; // { id, email } del usuario logueado
+
+function checkAuth(){
+  if(typeof StorageService==='undefined'||typeof StorageService.getUser!=='function'){
+    authDone();return;
+  }
+  StorageService.getUser().then(function(user){
+    if(user){
+      CURRENT_USER={id:user.id,email:user.email};
+      authDone();
+    }else{
+      showAuth();
+    }
+  }).catch(function(){
+    showAuth();
+  });
+}
+
+function showAuth(){
+  CURRENT_USER=null;
+  document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
+  document.getElementById('sa').classList.add('on');
+  document.getElementById('pbar').classList.add('hidden');
+  resetAuthForm();
+}
+
+function authDone(){
+  document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
+  document.getElementById('s0').classList.add('on');
+  updateUserUI();
+}
+
+function toggleAuth(){
+  AUTH_MODE=AUTH_MODE==='login'?'register':'login';
+  var isLogin=AUTH_MODE==='login';
+  document.getElementById('auth-title').textContent=isLogin?'Iniciar Sesión':'Crear Cuenta';
+  document.getElementById('auth-btn').textContent=isLogin?'Iniciar Sesión':'Crear Cuenta';
+  document.getElementById('auth-toggle-text').textContent=isLogin?'¿No tienes cuenta?':'¿Ya tienes cuenta?';
+  document.getElementById('auth-toggle-link').textContent=isLogin?'Regístrate':'Iniciar Sesión';
+  document.getElementById('auth-confirm-group').classList.toggle('hidden',isLogin);
+  resetAuthForm();
+}
+
+function resetAuthForm(){
+  document.getElementById('auth-email').value='';
+  document.getElementById('auth-pass').value='';
+  var cf=document.getElementById('auth-confirm');if(cf)cf.value='';
+  document.getElementById('auth-err').textContent='';
+}
+
+function handleAuth(){
+  var email=document.getElementById('auth-email').value.trim();
+  var pass=document.getElementById('auth-pass').value;
+  var err=document.getElementById('auth-err');
+  if(!email||!pass){err.textContent='Completa todos los campos.';return;}
+  if(AUTH_MODE==='register'){
+    var cf=document.getElementById('auth-confirm').value;
+    if(pass!==cf){err.textContent='Las contraseñas no coinciden.';return;}
+    if(pass.length<6){err.textContent='Mínimo 6 caracteres.';return;}
+    err.textContent='Creando cuenta...';
+    document.getElementById('auth-btn').disabled=true;
+    StorageService.signUp(email,pass).then(function(res){
+      document.getElementById('auth-btn').disabled=false;
+      if(res.error){err.textContent=res.error.message||'Error al crear cuenta.';return;}
+      if(res.data.user&&res.data.session){
+        CURRENT_USER={id:res.data.user.id,email:res.data.user.email};
+        authDone();
+      }else{
+        err.textContent='Revisa tu correo para confirmar (o desactiva confirmación en Supabase).';
+      }
+    }).catch(function(e){document.getElementById('auth-btn').disabled=false;err.textContent='Error de conexión.';});
+  }else{
+    err.textContent='Iniciando sesión...';
+    document.getElementById('auth-btn').disabled=true;
+    StorageService.signIn(email,pass).then(function(res){
+      document.getElementById('auth-btn').disabled=false;
+      if(res.error){err.textContent=res.error.message||'Credenciales inválidas.';return;}
+      CURRENT_USER={id:res.data.user.id,email:res.data.user.email};
+      authDone();
+    }).catch(function(e){document.getElementById('auth-btn').disabled=false;err.textContent='Error de conexión.';});
+  }
+}
+
+function doLogout(){
+  document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
+  document.getElementById('sa').classList.add('on');
+  document.getElementById('pbar').classList.add('hidden');
+  if(typeof StorageService!=='undefined'&&typeof StorageService.signOut==='function'){
+    StorageService.signOut().catch(function(){});
+  }
+  CURRENT_USER=null;
+  resetAuthForm();
+  toast('Sesión cerrada','i');
+}
+
+function updateUserUI(){
+  var uel=document.getElementById('user-info');
+  if(!uel)return;
+  if(CURRENT_USER){
+    uel.innerHTML='<div class="flex items-center gap-1.5 text-xs md:text-sm" style="color:#5a8a4a">'+
+      '<i class="fas fa-circle text-xs" style="color:#5a8a4a"></i>'+
+      '<span class="text-e-300 truncate max-w-[140px] md:max-w-[200px]">'+escHtml(CURRENT_USER.email)+'</span>'+
+      '<button class="text-e-600 hover:text-e-300 text-xs ml-1" onclick="doLogout()" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></button>'+
+      '</div>';
+  }else{
+    uel.innerHTML='';
+  }
+}
+
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
 /* ========== HISTORIAL PERSISTENTE ========== */
 var Hist=[];
 function loadHist(){try{var h=localStorage.getItem('cbs_history');if(h)Hist=JSON.parse(h);}catch(e){}}
@@ -568,6 +681,7 @@ function uploadEvalToCloud(ev,evalId){
       ratings:ev.ratings,notes:ev.notes,checks:ev.checks,
       wormCount:ev.wormCount,ts:ev.ts
     };
+    if(CURRENT_USER&&CURRENT_USER.id){cloudDoc.user_id=CURRENT_USER.id;}
     return StorageService.saveEval(cloudDoc);
   }).then(function(docId){
     var localEv=St.evals.find(function(e){return e.id===evalId;});
@@ -796,7 +910,9 @@ function saveCons(){
   try{localStorage.setItem('cbs_cons',JSON.stringify(St.cons));}catch(e){}
   saveLS();
   if(typeof StorageService!=='undefined'&&navigator.onLine){
-    StorageService.saveCons({cons:St.cons,ts:new Date().toISOString()}).catch(function(){});
+    var consObj={cons:St.cons,ts:new Date().toISOString()};
+    if(CURRENT_USER&&CURRENT_USER.id){consObj.user_id=CURRENT_USER.id;}
+    StorageService.saveCons(consObj).catch(function(){});
   }
   toast('Consenso guardado','s');
 }
@@ -850,6 +966,7 @@ window.addEventListener('offline',updateOnlineStatus);
 
 /* ========== INIT ========== */
 function init(){
+  checkAuth();
   loadLS();loadHist();loadSite();
   // Normalizar fotos del sitio en localStorage (compatibilidad)
   if(!Array.isArray(St.photos.sh))St.photos.sh=St.photos.sh?[St.photos.sh]:[];

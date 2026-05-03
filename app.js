@@ -805,6 +805,7 @@ function uploadEvalToCloud(ev,evalId){
     toast('Sincronizado \u2601','s');
   }).catch(function(err){
     console.warn('[CBS] Error al subir evaluacion:',err);
+    toast('Error al sincronizar: '+(err.message||'desconocido'),'e');
   });
 }
 

@@ -148,6 +148,44 @@ canvas[id^="rdr"]{display:block;max-width:100%}
 </div>
 </div>
 
+<!-- ========== PANTALLA: CODIGO DE GRUPO ========== -->
+<div id="sg" class="scr">
+<div class="flex flex-col items-center justify-center min-h-screen text-center px-4">
+  <div class="mb-4 md:mb-6" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#5a8a4a,#3a6a2a);display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px rgba(90,138,74,.2)">
+    <i class="fas fa-users text-2xl md:text-3xl text-e-50"></i>
+  </div>
+  <h1 class="font-d text-2xl md:text-4xl font-black mb-1">Grupo Creado</h1>
+  <p class="text-e-500 text-xs md:text-sm mb-3">Comparte este código con los demás evaluadores</p>
+  <div class="cd p-5 md:p-6 w-full max-w-sm md:max-w-md text-center">
+    <div id="codigo-grupo" class="font-d text-4xl md:text-6xl font-black tracking-[0.3em] text-amb mb-4">------</div>
+    <p class="text-e-600 text-xs md:text-sm mb-4">Cada participante debe ingresar este código en "Unirse a un grupo"</p>
+    <button class="bp w-full mb-2" onclick="copiarCodigo()"><i class="fas fa-copy mr-1"></i>Copiar código</button>
+    <button class="bp w-full" style="background:linear-gradient(135deg,#5a8a4a,#3a6a2a)" onclick="iniciarEvalGrupal()"><i class="fas fa-play mr-1"></i>Comenzar mi evaluación</button>
+    <button class="bs w-full mt-2" onclick="cancelarGrupo()"><i class="fas fa-times mr-1"></i>Cancelar</button>
+  </div>
+</div>
+</div>
+
+<!-- ========== PANTALLA: UNIRSE A GRUPO ========== -->
+<div id="su" class="scr">
+<div class="flex flex-col items-center justify-center min-h-screen text-center px-4">
+  <div class="mb-4 md:mb-6" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#d4a853,#b8923f);display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px rgba(212,168,83,.2)">
+    <i class="fas fa-right-to-bracket text-2xl md:text-3xl" style="color:#1a1510"></i>
+  </div>
+  <h1 class="font-d text-2xl md:text-4xl font-black mb-1">Unirse a Grupo</h1>
+  <p class="text-e-500 text-xs md:text-sm mb-5">Ingresa el código de 6 caracteres que te compartió el líder</p>
+  <div class="cd p-5 md:p-6 w-full max-w-sm md:max-w-md text-center">
+    <div class="text-left">
+      <label class="flb">Código del grupo</label>
+      <input id="unir-codigo" class="finp text-center text-xl md:text-2xl tracking-[0.3em] uppercase" maxlength="6" placeholder="XXXXXX" style="font-family:monospace" oninput="this.value=this.value.replace(/[^A-Za-z0-9]/g,'').toUpperCase()" onkeydown="if(event.key==='Enter')unirseAGrupo()">
+    </div>
+    <div id="unir-err" class="auth-err"></div>
+    <button class="bp w-full mt-3" onclick="unirseAGrupo()"><i class="fas fa-check mr-1"></i>Unirse al grupo</button>
+    <button class="bs w-full mt-2" onclick="nav(0)"><i class="fas fa-arrow-left mr-1"></i>Volver</button>
+  </div>
+</div>
+</div>
+
 <!-- ========== PANTALLA 0: INICIO ========== -->
 <div id="s0" class="scr">
 <div class="flex flex-col items-center justify-center min-h-screen text-center px-2">
@@ -167,8 +205,10 @@ canvas[id^="rdr"]{display:block;max-width:100%}
       <div class="flex items-center gap-2"><i class="fas fa-chart-pie text-amb w-4 text-center"></i>Grafico de brechas</div>
     </div>
   </div>
-  <button class="bp text-base md:text-lg px-6 py-2.5 md:py-3 md:px-8" onclick="nav(1)">Comenzar evaluacion</button>
-  <button class="bs text-sm md:text-base px-5 py-2 mt-2" onclick="nav(11)"><i class="fas fa-history mr-1"></i>Ver historial</button>
+  <button class="bp text-base md:text-lg px-6 py-2.5 md:py-3 md:px-8 w-full max-w-xs" onclick="crearGrupo()"><i class="fas fa-users mr-2"></i>Nueva evaluación grupal</button>
+  <button class="bs text-sm md:text-base px-5 py-2 mt-2 w-full max-w-xs" onclick="showUnirseGrupo()"><i class="fas fa-right-to-bracket mr-1"></i>Unirse a un grupo</button>
+  <button class="bs text-sm md:text-base px-5 py-2 mt-2 w-full max-w-xs" onclick="nav(1)"><i class="fas fa-user mr-1"></i>Evaluación individual</button>
+  <button class="bs text-sm md:text-base px-5 py-2 mt-2 w-full max-w-xs" onclick="nav(11)"><i class="fas fa-history mr-1"></i>Ver historial</button>
   <div id="resume-btn"></div>
   <div id="user-info" class="mt-3"></div>
   <div id="online-badge" class="flex items-center gap-1 mt-2 text-xs" style="color:#5a8a4a">
@@ -186,6 +226,7 @@ canvas[id^="rdr"]{display:block;max-width:100%}
 
 <!-- ========== PANTALLA 1: DATOS DEL SITIO ========== -->
 <div id="s1" class="scr"><div class="max-w-lg md:max-w-3xl mx-auto pt-3 md:pt-8">
+  <div id="grupo-header" class="mb-2"></div>
   <h2 class="font-d text-xl md:text-3xl font-bold mb-0.5"><i class="fas fa-map-pin text-amb mr-2"></i>Datos del Sitio</h2>
   <p class="text-e-500 text-xs md:text-sm mb-4">Informacion de la unidad de manejo</p>
   <div class="cd p-4 md:p-6 flex flex-col gap-3 md:gap-4">
@@ -263,12 +304,12 @@ canvas[id^="rdr"]{display:block;max-width:100%}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <!-- Config y capa de servicio -->
-<script src="supabase-config.js?v=6"></script>
-<script src="services/storage.service.js?v=6"></script>
-<script src="services/supabase.provider.js?v=6"></script>
+<script src="supabase-config.js?v=7"></script>
+<script src="services/storage.service.js?v=7"></script>
+<script src="services/supabase.provider.js?v=7"></script>
 
 <!-- Logica principal -->
-<script src="app.js?v=6"></script>
+<script src="app.js?v=7"></script>
 
 <!-- PWA Service Worker -->
 <script>

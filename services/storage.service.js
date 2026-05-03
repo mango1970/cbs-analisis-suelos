@@ -77,5 +77,22 @@ var StorageService = (function() {
     _provider.onAuthChange(callback);
   }
 
-  return { setProvider, upload, getUrl, saveEval, loadEvals, saveCons, getUser, signUp, signIn, signOut, onAuthChange };
+  // ========== GRUPOS ==========
+
+  function crearGrupo(sitio, userId) {
+    if (!_provider) return Promise.resolve(null);
+    return _provider.crearGrupo(sitio, userId);
+  }
+
+  function unirseAGrupo(codigo) {
+    if (!_provider) return Promise.resolve(null);
+    return _provider.unirseAGrupo(codigo);
+  }
+
+  function getEvalsGrupo(grupoId) {
+    if (!_provider) return Promise.resolve([]);
+    return _provider.getEvalsGrupo(grupoId);
+  }
+
+  return { setProvider, upload, getUrl, saveEval, loadEvals, saveCons, getUser, signUp, signIn, signOut, onAuthChange, crearGrupo, unirseAGrupo, getEvalsGrupo };
 })();

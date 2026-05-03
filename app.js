@@ -116,6 +116,7 @@ function wormCalc(n){
 var St={step:0,site:{ev:'',ce:'',un:'',fe:'',ri:'',zo:'',pu:'',lat:null,lng:null,alt:null,acc:null},photos:{sh:[],sd:[]},ratings:{},notes:{},checks:{},wormCount:0,imgA:{},evals:[],cons:{}};
 SP.forEach(function(sp){St.ratings[sp.id]=null;St.notes[sp.id]='';St.checks[sp.id]={};St.imgA[sp.id]=null;});
 var SLBL=['Datos','Fotos','Detritosfera','Agregatosfera','Drilosfera','Rizosfera','Porosfera','Resumen'];
+var CURRENT_GRUPO=null; // ID del grupo actual de evaluacion (compartido entre participantes)
 
 /* ========== AUTH ========== */
 var AUTH_MODE='login'; // 'login' | 'register'
@@ -217,18 +218,129 @@ function doLogout(){
 function updateUserUI(){
   var uel=document.getElementById('user-info');
   if(!uel)return;
+  var html='';
+  if(CURRENT_GRUPO){
+    html+='<div class="flex items-center gap-1.5 mb-1.5" style="padding:.35rem .6rem;background:rgba(90,138,74,.1);border:1px solid rgba(90,138,74,.25);border-radius:20px">'+
+      '<i class="fas fa-users text-xs" style="color:#5a8a4a"></i>'+
+      '<span class="text-xs md:text-sm font-bold" style="color:#5a8a4a">Grupo: '+CURRENT_GRUPO.codigo+'</span>'+
+      '<button class="text-e-600 hover:text-e-300 text-xs ml-1" onclick="salirGrupo()" title="Salir del grupo"><i class="fas fa-times"></i></button>'+
+      '</div>';
+  }
   if(CURRENT_USER){
-    uel.innerHTML='<div class="flex items-center gap-1.5 text-xs md:text-sm" style="color:#5a8a4a">'+
+    html+='<div class="flex items-center gap-1.5 text-xs md:text-sm" style="color:#5a8a4a">'+
       '<i class="fas fa-circle text-xs" style="color:#5a8a4a"></i>'+
       '<span class="text-e-300 truncate max-w-[140px] md:max-w-[200px]">'+escHtml(CURRENT_USER.email)+'</span>'+
       '<button class="text-e-600 hover:text-e-300 text-xs ml-1" onclick="doLogout()" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></button>'+
       '</div>';
+  }
+  uel.innerHTML=html;
+}
+
+function salirGrupo(){
+  CURRENT_GRUPO=null;
+  updateUserUI();
+  updateGrupoHeader();
+  toast('Saliste del grupo','i');
+}
+
+function updateGrupoHeader(){
+  var el=document.getElementById('grupo-header');
+  if(!el)return;
+  if(CURRENT_GRUPO){
+    el.innerHTML='<div style="display:inline-flex;align-items:center;gap:.4rem;padding:.25rem .6rem;background:rgba(90,138,74,.12);border:1px solid rgba(90,138,74,.3);border-radius:20px;font-size:.75rem" class="md:text-sm">'+
+      '<i class="fas fa-users" style="color:#5a8a4a"></i>'+
+      '<span style="color:#5a8a4a;font-weight:700">Grupo: '+CURRENT_GRUPO.codigo+'</span></div>';
   }else{
-    uel.innerHTML='';
+    el.innerHTML='';
   }
 }
 
 function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+/* ========== GRUPOS ========== */
+
+function crearGrupo(){
+  if(!CURRENT_USER){toast('Inicia sesión primero','e');return;}
+  if(typeof StorageService==='undefined'||typeof StorageService.crearGrupo!=='function'){
+    toast('Sin conexión al servidor','e');return;
+  }
+  var sitio={};
+  ['ev','ce','un','fe','ri','zo','pu'].forEach(function(k){sitio[k]='';});
+  sitio.ev=CURRENT_USER.email.split('@')[0];
+  StorageService.crearGrupo(sitio,CURRENT_USER.id).then(function(grupo){
+    if(!grupo){toast('Error al crear grupo','e');return;}
+    CURRENT_GRUPO={id:grupo.id,codigo:grupo.codigo,sitio:grupo.sitio};
+    document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
+    document.getElementById('sg').classList.add('on');
+    document.getElementById('codigo-grupo').textContent=grupo.codigo;
+    document.getElementById('pbar').classList.add('hidden');
+  }).catch(function(){toast('Error de conexión','e');});
+}
+
+function copiarCodigo(){
+  if(!CURRENT_GRUPO)return;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(CURRENT_GRUPO.codigo).then(function(){
+      toast('Código copiado: '+CURRENT_GRUPO.codigo,'s');
+    }).catch(function(){
+      toast('Código: '+CURRENT_GRUPO.codigo,'i');
+    });
+  }else{
+    toast('Código: '+CURRENT_GRUPO.codigo,'i');
+  }
+}
+
+function iniciarEvalGrupal(){
+  if(!CURRENT_GRUPO)return;
+  // Precargar sitio del grupo si no tiene datos
+  var sitio=CURRENT_GRUPO.sitio||{};
+  if(!St.site.ev&&sitio.ev)St.site.ev=sitio.ev;
+  if(!St.site.ce&&sitio.ce)St.site.ce=sitio.ce;
+  if(!St.site.un&&sitio.un)St.site.un=sitio.un;
+  if(!St.site.fe&&sitio.fe)St.site.fe=sitio.fe;
+  resetEval();nav(1);
+}
+
+function cancelarGrupo(){
+  CURRENT_GRUPO=null;
+  nav(0);
+}
+
+function showUnirseGrupo(){
+  if(!CURRENT_USER){toast('Inicia sesión primero','e');return;}
+  document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
+  document.getElementById('su').classList.add('on');
+  document.getElementById('unir-codigo').value='';
+  document.getElementById('unir-err').textContent='';
+  document.getElementById('pbar').classList.add('hidden');
+}
+
+function unirseAGrupo(){
+  var codigo=document.getElementById('unir-codigo').value.trim().toUpperCase();
+  var err=document.getElementById('unir-err');
+  if(codigo.length!==6){err.textContent='El código debe tener 6 caracteres.';return;}
+  err.textContent='Buscando grupo...';
+  StorageService.unirseAGrupo(codigo).then(function(grupo){
+    if(!grupo){err.textContent='Código no encontrado. Verifica e intenta de nuevo.';return;}
+    CURRENT_GRUPO={id:grupo.id,codigo:grupo.codigo,sitio:grupo.sitio};
+    // Precargar sitio
+    if(grupo.sitio&&grupo.sitio.ce){St.site.ce=grupo.sitio.ce;}
+    if(grupo.sitio&&grupo.sitio.un){St.site.un=grupo.sitio.un;}
+    if(grupo.sitio&&grupo.sitio.fe){St.site.fe=grupo.sitio.fe;}
+    resetEval();
+    document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
+    document.getElementById('s0').classList.add('on');
+    document.getElementById('pbar').classList.add('hidden');
+    updateUserUI();
+    toast('Te uniste al grupo: '+grupo.codigo,'s');
+  }).catch(function(){err.textContent='Error de conexión.';});
+}
+
+function resetEval(){
+  SP.forEach(function(s){St.ratings[s.id]=null;St.notes[s.id]='';St.checks[s.id]={};St.imgA[s.id]=null;});
+  St.photos={sh:[],sd:[]};St.wormCount=0;
+  if(!CURRENT_GRUPO){St.site.ev=CURRENT_USER?CURRENT_USER.email.split('@')[0]:'';}
+}
 
 /* ========== HISTORIAL PERSISTENTE ========== */
 var Hist=[];
@@ -248,6 +360,7 @@ function nav(n){
   document.getElementById(ids[n]||'s0').classList.add('on');
   var pb=document.getElementById('pbar');
   if(n>=1&&n<=8){pb.classList.remove('hidden');updProg(n);}else pb.classList.add('hidden');
+  if(n===1){updateGrupoHeader();}
   if(n===2){mkPhotoGallery('sh','ph-sh');mkPhotoGallery('sd','ph-sd');}
   if(n>=3&&n<=7)renderSphere(SP[n-3]);
   if(n===8)renderSummary();
@@ -632,6 +745,7 @@ function finishEval(){
     photos:{},photoRefs:{},ratings:{},notes:{},checks:{},
     wormCount:St.wormCount,ts:new Date().toISOString(),synced:false
   };
+  if(CURRENT_GRUPO){ev.grupo_id=CURRENT_GRUPO.id;}
   // Copiar datos sin referencia
   Object.keys(St.photos).forEach(function(k){
     var val=St.photos[k];
@@ -682,6 +796,7 @@ function uploadEvalToCloud(ev,evalId){
       wormCount:ev.wormCount,ts:ev.ts
     };
     if(CURRENT_USER&&CURRENT_USER.id){cloudDoc.user_id=CURRENT_USER.id;}
+    if(ev.grupo_id){cloudDoc.grupo_id=ev.grupo_id;}
     return StorageService.saveEval(cloudDoc);
   }).then(function(docId){
     var localEv=St.evals.find(function(e){return e.id===evalId;});
@@ -912,6 +1027,7 @@ function saveCons(){
   if(typeof StorageService!=='undefined'&&navigator.onLine){
     var consObj={cons:St.cons,ts:new Date().toISOString()};
     if(CURRENT_USER&&CURRENT_USER.id){consObj.user_id=CURRENT_USER.id;}
+    if(CURRENT_GRUPO){consObj.grupo_id=CURRENT_GRUPO.id;}
     StorageService.saveCons(consObj).catch(function(){});
   }
   toast('Consenso guardado','s');
@@ -920,12 +1036,16 @@ function saveCons(){
 /* ========== ACCIONES GLOBALES ========== */
 function newPart(){
   SP.forEach(function(s){St.ratings[s.id]=null;St.notes[s.id]='';St.checks[s.id]={};St.imgA[s.id]=null;});
-  St.photos={sh:[],sd:[]};St.wormCount=0;St.site.ev='';loadSite();nav(1);toast('Datos del nuevo participante','i');
+  St.photos={sh:[],sd:[]};St.wormCount=0;
+  // Mantener sitio del grupo
+  if(!CURRENT_GRUPO){St.site.ev='';}
+  loadSite();nav(1);toast('Datos del nuevo participante','i');
 }
 function resetAll(){
   SP.forEach(function(s){St.ratings[s.id]=null;St.notes[s.id]='';St.checks[s.id]={};St.imgA[s.id]=null;});
   St.photos={sh:[],sd:[]};St.wormCount=0;St.site={ev:'',ce:'',un:'',fe:'',ri:'',zo:'',pu:'',lat:null,lng:null,alt:null,acc:null};
   St.evals=[];St.cons={};
+  CURRENT_GRUPO=null;
   try{localStorage.removeItem('cbs_ev');localStorage.removeItem('cbs_cons');}catch(e){}
   nav(0);
 }

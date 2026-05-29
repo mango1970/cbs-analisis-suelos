@@ -166,8 +166,20 @@ function toggleAuth(){
 function resetAuthForm(){
   document.getElementById('auth-email').value='';
   document.getElementById('auth-pass').value='';
-  var cf=document.getElementById('auth-confirm');if(cf)cf.value='';
+  document.getElementById('auth-pass').type='password';
+  var cf=document.getElementById('auth-confirm');if(cf){cf.value='';cf.type='password';}
   document.getElementById('auth-err').textContent='';
+  document.querySelectorAll('.pwd-toggle i').forEach(function(el){el.className='fas fa-eye';});
+}
+
+function togglePassVis(id){
+  var el=document.getElementById(id);if(!el)return;
+  var icon=el.parentElement.querySelector('.pwd-toggle i');
+  if(el.type==='password'){
+    el.type='text';if(icon)icon.className='fas fa-eye-slash';
+  }else{
+    el.type='password';if(icon)icon.className='fas fa-eye';
+  }
 }
 
 function handleAuth(){
@@ -344,8 +356,8 @@ function resetEval(){
 
 /* ========== HISTORIAL PERSISTENTE ========== */
 var Hist=[];
-function loadHist(){try{var h=localStorage.getItem('cbs_history');if(h)Hist=JSON.parse(h);}catch(e){}}
-function saveHist(){localStorage.setItem('cbs_history',JSON.stringify(Hist));}
+async function loadHistAsync(){try{Hist=await LocalDB.loadHistory();}catch(e){Hist=[];}}
+function saveHist(){LocalDB.saveHistory(Hist).catch(function(e){console.warn('[CBS] Error guardando historial:',e);});}
 function addToHist(ev){
   var slim=Object.assign({},ev);slim.photos={};slim.imgA={};
   Hist.unshift(slim);saveHist();
@@ -489,21 +501,11 @@ function removePhoto(key,idx,container){
 }
 
 /* ========== FOTOS ESFERA (1 por esfera) ========== */
-function mkPhoto(key,container){
-  var el=document.getElementById(container);
-  if(St.photos[key]&&typeof St.photos[key]==='string'){
-    el.innerHTML='<div class="relative"><img src="'+St.photos[key]+'" style="width:100%;border-radius:6px;max-height:140px;object-fit:cover"><button onclick="retake(\''+key+'\',\''+container+'\')" class="absolute top-1 right-1 bg-black/60 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-black/80"><i class="fas fa-redo"></i></button></div>';
-  }else{
-    el.innerHTML='<label class="cb"><i class="fas fa-camera text-xl text-e-500"></i><span class="text-e-500 text-xs">Tomar foto</span><input type="file" accept="image/*" capture="environment" class="hidden" onchange="takePhoto(event,\''+key+'\',\''+container+'\')"></label>';
-  }
+function retake(key,container){
+  delete St.photos[key];
+  delete St.imgA[key];
+  renderSphere(SP.find(function(s){return s.id===key;}));
 }
-function takePhoto(e,key,container){
-  var f=e.target.files[0];if(!f)return;
-  var r=new FileReader();
-  r.onload=function(ev){St.photos[key]=ev.target.result;mkPhoto(key,container);toast('Foto capturada','s');};
-  r.readAsDataURL(f);
-}
-function retake(key,container){delete St.photos[key];mkPhoto(key,container);}
 
 /* ========== OPTIMIZACION DE IMAGEN (redimensiona antes de subir) ========== */
 function resizeImage(dataUrl,maxPx,quality){
@@ -866,7 +868,11 @@ function renderSummary(evParam){
           (St.evals.length>=2?'<button class="bp" style="background:linear-gradient(135deg,#5a8a4a,#3a6a2a)" onclick="nav(10)"><i class="fas fa-users mr-1"></i>Consenso grupal</button>':'')+
           '<button class="bs" onclick="resetAll()"><i class="fas fa-redo mr-1"></i>Nueva evaluacion</button>'
       )+'</div>';
-  setTimeout(function(){drawRadar('rdr1',data);},80);
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      drawRadar('rdr1',data);
+    });
+  });
 }
 
 /* ========== RADAR ========== */
@@ -1023,7 +1029,7 @@ function renderConsensus(){
 }
 function setCons(sid,lv){St.cons[sid]=lv;renderConsensus();}
 function saveCons(){
-  try{localStorage.setItem('cbs_cons',JSON.stringify(St.cons));}catch(e){}
+  LocalDB.saveConsensus(St.cons).catch(function(e){console.warn('[CBS] Error guardando consenso:',e);});
   saveLS();
   if(typeof StorageService!=='undefined'&&navigator.onLine){
     var consObj={cons:St.cons,ts:new Date().toISOString()};
@@ -1047,19 +1053,24 @@ function resetAll(){
   St.photos={sh:[],sd:[]};St.wormCount=0;St.site={ev:'',ce:'',un:'',fe:'',ri:'',zo:'',pu:'',lat:null,lng:null,alt:null,acc:null};
   St.evals=[];St.cons={};
   CURRENT_GRUPO=null;
-  try{localStorage.removeItem('cbs_ev');localStorage.removeItem('cbs_cons');}catch(e){}
+  LocalDB.clearAll().catch(function(e){console.warn('[CBS] Error limpiando datos:',e);});
   nav(0);
 }
 
 /* ========== STORAGE LOCAL ========== */
 function saveLS(){
-  try{localStorage.setItem('cbs_ev',JSON.stringify(St.evals));}catch(e){}
+  LocalDB.saveEvals(St.evals).catch(function(e){console.warn('[CBS] Error guardando evaluaciones:',e);});
 }
-function loadLS(){
-  try{
-    var e=localStorage.getItem('cbs_ev');if(e)St.evals=JSON.parse(e);
-    var c2=localStorage.getItem('cbs_cons');if(c2)St.cons=JSON.parse(c2);
-  }catch(e){}
+async function loadLSAsync(){
+  try{St.evals=await LocalDB.loadEvals();}catch(e){St.evals=[];}
+  // Asegurar que fotos sean arrays (compatibilidad con datos viejos)
+  St.evals.forEach(function(ev){
+    if(ev.photos){
+      if(!Array.isArray(ev.photos.sh))ev.photos.sh=ev.photos.sh?[ev.photos.sh]:[];
+      if(!Array.isArray(ev.photos.sd))ev.photos.sd=ev.photos.sd?[ev.photos.sd]:[];
+    }
+  });
+  try{var cons=await LocalDB.loadConsensus();if(cons&&Object.keys(cons).length)St.cons=cons;}catch(e){St.cons={};}
 }
 
 /* ========== TOAST ========== */
@@ -1086,10 +1097,12 @@ window.addEventListener('online',updateOnlineStatus);
 window.addEventListener('offline',updateOnlineStatus);
 
 /* ========== INIT ========== */
-function init(){
+async function init(){
+  await LocalDB.init();
+  await loadLSAsync();
+  await loadHistAsync();
   checkAuth();
-  loadLS();loadHist();loadSite();
-  // Normalizar fotos del sitio en localStorage (compatibilidad)
+  loadSite();
   if(!Array.isArray(St.photos.sh))St.photos.sh=St.photos.sh?[St.photos.sh]:[];
   if(!Array.isArray(St.photos.sd))St.photos.sd=St.photos.sd?[St.photos.sd]:[];
 
@@ -1100,5 +1113,5 @@ function init(){
       '<button class="bs mt-3 text-sm" onclick="nav('+(St.evals.length>=2?9:8)+')">'+
       '<i class="fas fa-folder-open mr-1"></i>Continuar ('+St.evals.length+' evaluacion'+(St.evals.length>1?'es':'')+')</button>';
   }
-}
+  }
 init();

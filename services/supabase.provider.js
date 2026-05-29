@@ -7,7 +7,7 @@
 
 var SupabaseProvider = (function() {
   var _client = null;
-  var _bucket = 'fotos';
+  var _bucket;
   var _ready  = false;
 
   function init() {
@@ -37,13 +37,6 @@ var SupabaseProvider = (function() {
       });
   }
 
-  // Obtiene URL publica a partir de ruta relativa
-  function getUrl(relPath) {
-    if (!_ready) return Promise.resolve(null);
-    var res = _client.storage.from(_bucket).getPublicUrl(relPath);
-    return Promise.resolve(res.data.publicUrl);
-  }
-
   // Guarda evaluacion en DB (evalObj como JSONB + ts indexado)
   function saveEval(evalObj) {
     if (!_ready) return Promise.resolve(null);
@@ -55,18 +48,6 @@ var SupabaseProvider = (function() {
       .then(function(res) {
         if (res.error) throw res.error;
         return String(res.data.id);
-      });
-  }
-
-  // Carga evaluaciones desde DB ordenadas por ts desc
-  function loadEvals() {
-    if (!_ready) return Promise.resolve([]);
-    return _client.from('evaluaciones').select('id, data').order('ts', { ascending: false })
-      .then(function(res) {
-        if (res.error) throw res.error;
-        return res.data.map(function(row) {
-          return Object.assign({ supabaseId: row.id }, row.data);
-        });
       });
   }
 
@@ -112,14 +93,6 @@ var SupabaseProvider = (function() {
     return _client.auth.signOut();
   }
 
-  // Escuchar cambios de sesion
-  function onAuthChange(callback) {
-    if (!_ready) return;
-    _client.auth.onAuthStateChange(function(event, session) {
-      callback(session ? session.user : null);
-    });
-  }
-
   // ========== GRUPOS ==========
 
   // Crea un grupo con codigo de 6 caracteres unico
@@ -147,18 +120,7 @@ var SupabaseProvider = (function() {
     });
   }
 
-  // Obtiene todas las evaluaciones de un grupo
-  function getEvalsGrupo(grupoId) {
-    if (!_ready) return Promise.resolve([]);
-    return _client.from('evaluaciones').select('id, ts, data, user_id').eq('grupo_id', grupoId).order('ts', { ascending: false }).then(function(res) {
-      if (res.error) throw res.error;
-      return res.data.map(function(row) {
-        return Object.assign({ supabaseId: row.id, user_id: row.user_id, grupo_id: grupoId }, row.data);
-      });
-    });
-  }
-
-  return { init, upload, getUrl, saveEval, loadEvals, saveCons, getUser, signUp, signIn, signOut, onAuthChange, crearGrupo, unirseAGrupo, getEvalsGrupo };
+  return { init, upload, saveEval, saveCons, getUser, signUp, signIn, signOut, crearGrupo, unirseAGrupo };
 })();
 
 // Auto-inicializar si Supabase esta habilitado

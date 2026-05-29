@@ -21,26 +21,12 @@ var StorageService = (function() {
     return _provider.upload(relPath, blob);
   }
 
-  // Obtiene la URL de descarga a partir de una ruta relativa
-  // Retorna Promise<string|null>
-  function getUrl(relPath) {
-    if (!_provider) return Promise.resolve(null);
-    return _provider.getUrl(relPath);
-  }
-
   // Guarda el objeto de evaluacion en la base de datos
   // evalObj NO debe contener dataUrls; solo fotoRefs (rutas relativas)
   // Retorna Promise<string> con el ID del documento creado
   function saveEval(evalObj) {
     if (!_provider) return Promise.resolve(null);
     return _provider.saveEval(evalObj);
-  }
-
-  // Carga todas las evaluaciones del usuario
-  // Retorna Promise<Array>
-  function loadEvals() {
-    if (!_provider) return Promise.resolve([]);
-    return _provider.loadEvals();
   }
 
   // Guarda el consenso grupal
@@ -72,11 +58,6 @@ var StorageService = (function() {
     return _provider.signOut();
   }
 
-  function onAuthChange(callback) {
-    if (!_provider) return;
-    _provider.onAuthChange(callback);
-  }
-
   // ========== GRUPOS ==========
 
   function crearGrupo(sitio, userId) {
@@ -89,10 +70,5 @@ var StorageService = (function() {
     return _provider.unirseAGrupo(codigo);
   }
 
-  function getEvalsGrupo(grupoId) {
-    if (!_provider) return Promise.resolve([]);
-    return _provider.getEvalsGrupo(grupoId);
-  }
-
-  return { setProvider, upload, getUrl, saveEval, loadEvals, saveCons, getUser, signUp, signIn, signOut, onAuthChange, crearGrupo, unirseAGrupo, getEvalsGrupo };
+  return { setProvider, upload, saveEval, saveCons, getUser, signUp, signIn, signOut, crearGrupo, unirseAGrupo };
 })();

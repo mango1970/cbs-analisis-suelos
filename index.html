@@ -108,6 +108,10 @@ body{margin:0;font-family:'Source Sans 3',sans-serif;background:#1a1510;color:#f
 @media(max-width:380px){.ref-grid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:0s!important;transition-duration:0s!important}}
 canvas[id^="rdr"]{display:block;max-width:100%}
+.pwd-wrap{position:relative}.pwd-wrap .finp{padding-right:38px}
+.pwd-toggle{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;color:#5a4725;cursor:pointer;padding:6px 8px;font-size:15px;line-height:1;transition:color .2s;display:flex;align-items:center}
+.pwd-toggle:hover{color:#d4a853}
+@media(min-width:768px){.pwd-toggle{right:8px;font-size:17px}}
 </style>
 </head>
 <body>
@@ -131,11 +135,17 @@ canvas[id^="rdr"]{display:block;max-width:100%}
       </div>
       <div class="text-left">
         <label class="flb">Contraseña</label>
-        <input id="auth-pass" type="password" class="finp" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter'&&AUTH_MODE==='login')handleAuth();else if(event.key==='Enter')document.getElementById('auth-confirm').focus()">
+        <div class="pwd-wrap">
+          <input id="auth-pass" type="password" class="finp" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter'&&AUTH_MODE==='login')handleAuth();else if(event.key==='Enter')document.getElementById('auth-confirm').focus()">
+          <button type="button" class="pwd-toggle" tabindex="-1" onclick="togglePassVis('auth-pass')"><i class="fas fa-eye"></i></button>
+        </div>
       </div>
       <div id="auth-confirm-group" class="text-left hidden">
         <label class="flb">Confirmar contraseña</label>
-        <input id="auth-confirm" type="password" class="finp" placeholder="Repite la contraseña" autocomplete="new-password" onkeydown="if(event.key==='Enter')handleAuth()">
+        <div class="pwd-wrap">
+          <input id="auth-confirm" type="password" class="finp" placeholder="Repite la contraseña" autocomplete="new-password" onkeydown="if(event.key==='Enter')handleAuth()">
+          <button type="button" class="pwd-toggle" tabindex="-1" onclick="togglePassVis('auth-confirm')"><i class="fas fa-eye"></i></button>
+        </div>
       </div>
       <div id="auth-err" class="auth-err"></div>
       <button id="auth-btn" class="bp w-full py-2.5" onclick="handleAuth()">Iniciar Sesión</button>
@@ -308,9 +318,10 @@ canvas[id^="rdr"]{display:block;max-width:100%}
 <script src="supabase-config.js?v=7"></script>
 <script src="services/storage.service.js?v=7"></script>
 <script src="services/supabase.provider.js?v=7"></script>
+<script src="services/localdb.service.js?v=8"></script>
 
 <!-- Logica principal -->
-<script src="app.js?v=7"></script>
+<script src="app.js?v=8"></script>
 
 <!-- PWA Service Worker -->
 <script>

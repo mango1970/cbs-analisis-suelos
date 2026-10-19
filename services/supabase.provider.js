@@ -43,22 +43,7 @@ var SupabaseProvider = (function() {
     var ts = typeof evalObj.ts === 'number' ? evalObj.ts : Date.now();
     var row = { ts: ts, data: evalObj };
     if (evalObj.user_id) { row.user_id = evalObj.user_id; }
-    if (evalObj.grupo_id) { row.grupo_id = evalObj.grupo_id; }
     return _client.from('evaluaciones').insert(row).select('id').single()
-      .then(function(res) {
-        if (res.error) throw res.error;
-        return String(res.data.id);
-      });
-  }
-
-  // Guarda consenso en DB
-  function saveCons(consObj) {
-    if (!_ready) return Promise.resolve(null);
-    var ts = typeof consObj.ts === 'number' ? consObj.ts : Date.now();
-    var row = { ts: ts, data: consObj };
-    if (consObj.user_id) { row.user_id = consObj.user_id; }
-    if (consObj.grupo_id) { row.grupo_id = consObj.grupo_id; }
-    return _client.from('consensos').insert(row).select('id').single()
       .then(function(res) {
         if (res.error) throw res.error;
         return String(res.data.id);
@@ -114,34 +99,7 @@ var SupabaseProvider = (function() {
     });
   }
 
-  // ========== GRUPOS ==========
-
-  // Crea un grupo con codigo de 6 caracteres unico
-  function crearGrupo(sitio, userId) {
-    if (!_ready) return Promise.resolve(null);
-    var codigo = '';
-    var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    for (var i = 0; i < 6; i++) { codigo += chars[Math.floor(Math.random() * chars.length)]; }
-    return _client.from('grupos').insert({
-      codigo: codigo,
-      sitio: sitio,
-      creado_por: userId
-    }).select('*').single().then(function(res) {
-      if (res.error) throw res.error;
-      return res.data;
-    });
-  }
-
-  // Busca un grupo por su codigo
-  function unirseAGrupo(codigo) {
-    if (!_ready) return Promise.resolve(null);
-    return _client.from('grupos').select('*').eq('codigo', codigo).single().then(function(res) {
-      if (res.error) return null;
-      return res.data;
-    });
-  }
-
-  return { init, upload, saveEval, saveCons, getUser, signUp, signIn, signOut, resetPassword, updatePassword, onAuthStateChange, crearGrupo, unirseAGrupo };
+  return { init, upload, saveEval, getUser, signUp, signIn, signOut, resetPassword, updatePassword, onAuthStateChange };
 })();
 
 // Auto-inicializar si Supabase esta habilitado

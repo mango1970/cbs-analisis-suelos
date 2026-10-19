@@ -29,13 +29,6 @@ var StorageService = (function() {
     return _provider.saveEval(evalObj);
   }
 
-  // Guarda el consenso grupal
-  // Retorna Promise<string> con el ID del documento
-  function saveCons(consObj) {
-    if (!_provider) return Promise.resolve(null);
-    return _provider.saveCons(consObj);
-  }
-
   // ========== AUTH ==========
 
   function getUser() {
@@ -76,17 +69,5 @@ var StorageService = (function() {
     return _provider.onAuthStateChange(cb);
   }
 
-  // ========== GRUPOS ==========
-
-  function crearGrupo(sitio, userId) {
-    if (!_provider) return Promise.resolve(null);
-    return _provider.crearGrupo(sitio, userId);
-  }
-
-  function unirseAGrupo(codigo) {
-    if (!_provider) return Promise.resolve(null);
-    return _provider.unirseAGrupo(codigo);
-  }
-
-  return { setProvider, upload, saveEval, saveCons, getUser, signUp, signIn, signOut, resetPassword, updatePassword, onAuthStateChange, crearGrupo, unirseAGrupo };
+  return { setProvider, upload, saveEval, getUser, signUp, signIn, signOut, resetPassword, updatePassword, onAuthStateChange };
 })();

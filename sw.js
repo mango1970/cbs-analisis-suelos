@@ -1,5 +1,5 @@
 /* CBS Evaluador — Service Worker v5 */
-var CACHE='cbs-v9';
+var CACHE='cbs-v10';
 
 /* Recursos locales pre-cacheados al instalar */
 var LOCAL=[
@@ -11,7 +11,11 @@ var LOCAL=[
   './services/supabase.provider.js',
   './services/localdb.service.js',
   './manifest.json',
-  './icon.svg'
+  './icon.svg',
+  './favicon-32.png',
+  './icon-192.png',
+  './icon-512.png',
+  './apple-touch-icon.png'
 ];
 
 /* CDN externos — cache para funcionamiento offline */

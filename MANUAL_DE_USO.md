@@ -159,6 +159,7 @@ Cada esfera tiene la misma estructura. De arriba a abajo:
 3. **Procedimiento y ayudas:** los pasos del manual y qué observar.
 4. **Registro fotográfico:** una foto de esa esfera.
    - Tras tomarla aparece **"Analizar imagen"**: la app hace un análisis orientativo de la foto.
+   - También aparece **"Analizar con IA"**: envía la foto a un modelo de visión y devuelve una **segunda opinión** (nivel, confianza y motivos). Requiere conexión a internet. Es orientativa: no reemplaza tu criterio.
 5. **Criterios de observación (checklist):** marca los criterios que observes. Cada criterio apunta a un nivel (Pobre/Regular/Buena).
 6. **Sugerencia combinada:** si marcaste criterios y/o analizaste la foto, la app propone un nivel y una confianza. **Es solo una sugerencia.**
 7. **Observaciones:** escribe lo que veas (muy útil para el análisis posterior).
@@ -333,6 +334,7 @@ Sin conexión puedes:
 Lo que **requiere internet**:
 - **Iniciar sesión / registrarte / recuperar contraseña.**
 - **Sincronizar** (subir a la nube) las evaluaciones y sus fotos.
+- **"Analizar con IA"** (el análisis de imagen local sí funciona offline).
 
 > Si ya iniciaste sesión antes, la app recuerda tu sesión y puedes seguir trabajando offline. Si cierras sesión estando sin red, no podrás volver a entrar hasta tener conexión.
 

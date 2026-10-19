@@ -118,8 +118,8 @@ function wormCalc(n){
 }
 
 /* ========== ESTADO ========== */
-var St={step:0,site:{ev:'',ce:'',un:'',fe:'',ri:'',zo:'',pu:'',lat:null,lng:null,alt:null,acc:null},photos:{sh:[],sd:[]},ratings:{},notes:{},checks:{},wormCount:0,imgA:{},evals:[]};
-SP.forEach(function(sp){St.ratings[sp.id]=null;St.notes[sp.id]='';St.checks[sp.id]={};St.imgA[sp.id]=null;});
+var St={step:0,site:{ev:'',ce:'',un:'',fe:'',ri:'',zo:'',pu:'',lat:null,lng:null,alt:null,acc:null},photos:{sh:[],sd:[]},ratings:{},notes:{},checks:{},wormCount:0,imgA:{},aiA:{},evals:[]};
+SP.forEach(function(sp){St.ratings[sp.id]=null;St.notes[sp.id]='';St.checks[sp.id]={};St.imgA[sp.id]=null;St.aiA[sp.id]=null;});
 var SLBL=['Datos','Fotos','Detritosfera','Agregatosfera','Drilosfera','Rizosfera','Porosfera','Resumen'];
 
 /* ========== AUTH ========== */
@@ -295,7 +295,7 @@ function updateUserUI(){
 function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 function resetEval(){
-  SP.forEach(function(s){St.ratings[s.id]=null;St.notes[s.id]='';St.checks[s.id]={};St.imgA[s.id]=null;});
+  SP.forEach(function(s){St.ratings[s.id]=null;St.notes[s.id]='';St.checks[s.id]={};St.imgA[s.id]=null;St.aiA[s.id]=null;});
   St.photos={sh:[],sd:[]};St.wormCount=0;
   St.site.ev=CURRENT_USER?CURRENT_USER.email.split('@')[0]:'';
 }
@@ -508,14 +508,17 @@ function calcCheckSug(spId){
 
 /* ========== SUGERENCIA COMBINADA ========== */
 function combinedSug(spId){
-  var img=St.imgA[spId];var chk=calcCheckSug(spId);
-  var reasons=[];var conf=0;var score=0;var sources=[];
-  if(chk){score+=chk.level*0.6;conf+=chk.conf*0.6;sources.push('Checklist');}
-  if(img){score+=img.score*0.4;conf+=img.conf*0.4;sources.push('Analisis de imagen');reasons.push.apply(reasons,img.reasons.map(function(r){return '[Foto] '+r;}));}
-  if(sources.length===0)return null;
-  if(sources.length===1){score=sources[0]==='Checklist'?chk.level:img.score;conf=sources[0]==='Checklist'?chk.conf:img.conf;}
-  var level=score<1.8?1:score<2.5?2:3;level=Math.max(1,Math.min(3,level));conf=Math.round(conf);
-  return{level:level,conf:conf,sources:sources,reasons:reasons};
+  var img=St.imgA[spId];var chk=calcCheckSug(spId);var ai=St.aiA[spId];
+  var reasons=[];var sources=[];var parts=[];
+  if(chk){parts.push({level:chk.level,conf:chk.conf,w:0.45});sources.push('Checklist');}
+  if(img){parts.push({level:img.score,conf:img.conf,w:0.25});sources.push('Analisis de imagen');reasons.push.apply(reasons,img.reasons.map(function(r){return '[Foto] '+r;}));}
+  if(ai&&!ai.error){parts.push({level:ai.score,conf:ai.conf,w:0.30});sources.push('IA');if(ai.reasons&&ai.reasons.length)reasons.push.apply(reasons,ai.reasons.map(function(r){return '[IA] '+r;}));}
+  if(!parts.length)return null;
+  var tw=parts.reduce(function(a,p){return a+p.w;},0);
+  var score=0,conf=0;
+  parts.forEach(function(p){score+=(p.level*(p.w/tw));conf+=(p.conf*(p.w/tw));});
+  var level=score<1.8?1:score<2.5?2:3;level=Math.max(1,Math.min(3,level));
+  return{level:level,conf:Math.round(conf),sources:sources,reasons:reasons};
 }
 
 /* ========== CONTADOR LOMBRICES ========== */
@@ -593,6 +596,8 @@ function renderSphere(sp){
       '</div>'+
       (hasPhoto&&!St.imgA[sp.id]?'<button class="bp w-full mt-2 text-xs md:text-sm py-1.5 md:py-2" onclick="runAnalysis(\''+sp.id+'\')"><i class="fas fa-wand-magic-sparkles mr-1"></i>Analizar imagen</button>':'')+
       (St.imgA[sp.id]?renderImgResult(sp.id):'')+
+      (hasPhoto?'<button class="bs w-full mt-2 text-xs md:text-sm py-1.5 md:py-2" onclick="runAIAnalysis(\''+sp.id+'\')"><i class="fas fa-brain mr-1"></i>'+(St.aiA[sp.id]?'Re-analizar con IA':'Analizar con IA')+'</button>':'')+
+      (St.aiA[sp.id]?renderAIResult(sp.id):'')+
     '</div>'+
     wormHTML+
     /* CHECKLIST */
@@ -653,6 +658,40 @@ function runAnalysis(spId){
   });
 }
 
+/* ========== ANALISIS CON IA (Gemini via Edge Function) ========== */
+function blobToBase64(blob){
+  return new Promise(function(resolve,reject){
+    var r=new FileReader();
+    r.onload=function(){var s=String(r.result);var i=s.indexOf(',');resolve(i>=0?s.slice(i+1):s);};
+    r.onerror=reject;r.readAsDataURL(blob);
+  });
+}
+function runAIAnalysis(spId){
+  if(typeof StorageService==='undefined'||typeof StorageService.analyzeSphereAI!=='function'){toast('IA no disponible','e');return;}
+  var dataUrl=St.photos[spId];
+  if(!dataUrl||typeof dataUrl!=='string'){toast('Toma una foto primero','e');return;}
+  if(!navigator.onLine){toast('Necesitas conexion para la IA','e');return;}
+  toast('Analizando con IA...','i');
+  resizeImage(dataUrl,1024,0.85).then(blobToBase64).then(function(b64){
+    return StorageService.analyzeSphereAI(spId,b64);
+  }).then(function(res){
+    if(!res||res.error){toast('IA: '+((res&&res.error)||'error'),'e');return;}
+    St.aiA[spId]=res;
+    renderSphere(SP.find(function(s){return s.id===spId;}));
+    toast('Analisis IA completado','s');
+  }).catch(function(e){console.warn('[CBS] IA error',e);toast('Error al analizar con IA','e');});
+}
+function renderAIResult(spId){
+  var a=St.aiA[spId];var sp=SP.find(function(s){return s.id===spId;});
+  var lvl=a.score<1.8?1:a.score<2.5?2:3;
+  return '<div style="background:#0f1b26;border-radius:6px;padding:.6rem;margin-top:.5rem;border:1px solid #2a4a6a" class="md:p-4">'+
+    '<p class="text-e-200 text-xs md:text-sm font-semibold mb-1"><i class="fas fa-brain mr-1" style="color:#6db3f2"></i>Segunda opinion (IA)</p>'+
+    '<div class="cfb mb-1"><div class="cff" style="width:'+a.conf+'%;background:'+(a.conf>50?'#5a8a4a':'#d4a853')+'"></div></div>'+
+    '<p class="text-e-500 text-xs md:text-sm" style="font-size:10px">Confianza: '+a.conf+'% \u2014 Puntaje: '+a.score+'/3 \u2192 <span style="color:'+sp.lvls[lvl].c+';font-weight:700">'+sp.lvls[lvl].n+'</span></p>'+
+    ((a.reasons&&a.reasons.length)?'<div class="mt-1 space-y-0.5">'+a.reasons.map(function(r){return '<p class="text-e-400 text-xs md:text-sm" style="font-size:9px">\u2022 '+r+'</p>';}).join('')+'</div>':'')+
+    '<p class="text-e-700 mt-1 text-xs md:text-sm" style="font-size:9px"><i class="fas fa-info-circle mr-0.5"></i>Estimacion de un modelo de vision. No reemplaza su juicio.</p></div>';
+}
+
 function photoTaken(e,spId){
   var f=e.target.files[0];if(!f)return;
   var r=new FileReader();
@@ -688,6 +727,7 @@ function finishEval(){
     id:evalId,
     site:{ev:St.site.ev,ce:St.site.ce,un:St.site.un,fe:St.site.fe,ri:St.site.ri,zo:St.site.zo,pu:St.site.pu,lat:St.site.lat,lng:St.site.lng,alt:St.site.alt,acc:St.site.acc},
     photos:{},photoRefs:{},ratings:{},notes:{},checks:{},
+    aiAnalysis:{},
     wormCount:St.wormCount,ts:new Date().toISOString(),synced:false
   };
   // Copiar datos sin referencia
@@ -698,6 +738,7 @@ function finishEval(){
   Object.keys(St.ratings).forEach(function(k){ev.ratings[k]=St.ratings[k];});
   Object.keys(St.notes).forEach(function(k){ev.notes[k]=St.notes[k];});
   Object.keys(St.checks).forEach(function(k){ev.checks[k]=JSON.parse(JSON.stringify(St.checks[k]));});
+  Object.keys(St.aiA).forEach(function(k){if(St.aiA[k])ev.aiAnalysis[k]=St.aiA[k];});
 
   St.evals.push(ev);
   addToHist(ev);
@@ -742,6 +783,7 @@ function uploadEvalToCloud(ev,evalId){
       id:evalId,site:ev.site,
       photoRefs:photoRefs,// solo rutas relativas — sin dataUrls
       ratings:ev.ratings,notes:ev.notes,checks:ev.checks,
+      aiAnalysis:ev.aiAnalysis||{},
       wormCount:ev.wormCount,ts:ev.ts
     };
     if(CURRENT_USER&&CURRENT_USER.id){cloudDoc.user_id=CURRENT_USER.id;}
@@ -839,6 +881,14 @@ function renderSummary(evParam){
         '<i class="fas '+s.icon+' w-4 text-center" style="color:'+s.color+'"></i>'+
         '<span class="text-e-200 text-xs md:text-sm flex-1">'+s.name+'</span>'+
         '<span class="font-bold text-xs md:text-sm" style="color:'+l.c+'">'+l.n+'</span></div>';}).join('')+'</div></div>'+
+    ((ev.aiAnalysis&&Object.keys(ev.aiAnalysis).length)?
+      '<div class="cd p-3 md:p-5 mb-3"><p class="text-e-200 text-xs md:text-sm font-semibold mb-2"><i class="fas fa-brain mr-1" style="color:#6db3f2"></i>Segunda opinion (IA)</p>'+
+      '<div class="flex flex-col gap-1.5 md:gap-2">'+SP.map(function(s){var a=ev.aiAnalysis[s.id];if(!a||a.error)return '';var lv=a.score<1.8?1:a.score<2.5?2:3;var l=s.lvls[lv];return '<div class="flex items-center gap-2 md:gap-3" style="padding:.4rem .6rem;background:'+l.c+'0a;border-radius:6px;border-left:3px solid '+l.c+'">'+
+        '<i class="fas '+s.icon+' w-4 text-center" style="color:'+s.color+'"></i>'+
+        '<span class="text-e-200 text-xs md:text-sm flex-1">'+s.name+'</span>'+
+        '<span class="text-e-500 text-xs md:text-sm" style="font-size:10px">'+a.conf+'%</span>'+
+        '<span class="font-bold text-xs md:text-sm" style="color:'+l.c+'">'+l.n+'</span></div>';}).join('')+'</div></div>'
+    :'')+
     wormHTML+photosHTML+
     '<div class="flex flex-col gap-2 md:gap-3">'+
       (fromHist
@@ -946,7 +996,7 @@ function exportEval(i){
 function resetAll(){
   SP.forEach(function(s){St.ratings[s.id]=null;St.notes[s.id]='';St.checks[s.id]={};St.imgA[s.id]=null;});
   St.photos={sh:[],sd:[]};St.wormCount=0;St.site={ev:'',ce:'',un:'',fe:'',ri:'',zo:'',pu:'',lat:null,lng:null,alt:null,acc:null};
-  St.evals=[];
+  St.evals=[];St.aiA={};
   LocalDB.clearAll().catch(function(e){console.warn('[CBS] Error limpiando datos:',e);});
   nav(0);
 }

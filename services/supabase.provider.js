@@ -99,7 +99,24 @@ var SupabaseProvider = (function() {
     });
   }
 
-  return { init, upload, saveEval, getUser, signUp, signIn, signOut, resetPassword, updatePassword, onAuthStateChange };
+  // ========== IA (Gemini via Edge Function) ==========
+
+  // Analiza una foto de esfera con IA. Devuelve {score,conf,reasons} o {error}
+  function analyzeSphereAI(esfera, imageBase64) {
+    if (!_ready) return Promise.resolve({ error: 'No inicializado' });
+    return _client.functions.invoke('analizar-esfera', {
+      body: { esfera: esfera, imagenBase64: imageBase64 }
+    }).then(function(res) {
+      if (res.error) {
+        return { error: (res.error.message || res.error.name || 'Error al llamar a la IA') };
+      }
+      return res.data || { error: 'Respuesta vacia de la IA' };
+    }).catch(function(e) {
+      return { error: String((e && e.message) || e) };
+    });
+  }
+
+  return { init, upload, saveEval, getUser, signUp, signIn, signOut, resetPassword, updatePassword, onAuthStateChange, analyzeSphereAI };
 })();
 
 // Auto-inicializar si Supabase esta habilitado

@@ -27,6 +27,14 @@ Bitácora viva del proyecto: estado, decisiones, cambios y próximos pasos. **Ac
 
 ## Bitácora de cambios
 
+### 2026-10 — Fase 1 de IA (Gemini)
+
+- **Edge Function `analizar-esfera`**: proxy seguro a Google Gemini (la clave vive como secret). Recibe la foto de una esfera y devuelve `{score, conf, reasons}`.
+- **Frontend**: botón **"Analizar con IA"** por esfera, tarjeta "Segunda opinión (IA)", y guardado en `aiAnalysis[esfera]` dentro de la evaluación.
+- **Sugerencia combinada** ahora pondera Checklist + heurístico + IA.
+- **Fallback**: sin red o error de IA, sigue funcionando con heurístico + checklist.
+- **Pendiente de despliegue (usuario)**: crear la Edge Function en Supabase y configurar `GEMINI_API_KEY`.
+
 ### 2026-10 — Documentación y sincronización diferida
 
 - **Documentación completa:** README, arquitectura, metodología CERES, backend, análisis de imagen, roadmap de IA, despliegue y este seguimiento.

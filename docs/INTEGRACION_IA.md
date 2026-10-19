@@ -4,6 +4,19 @@
 
 Aumentar la calidad de las evaluaciones incorporando IA (visión por computador) que analice las **fotos de cada esfera** y aporte una estimación de condición (Pobre/Regular/Buena) con justificación, **sin reemplazar** el juicio del evaluador (human-in-the-loop).
 
+## Estado de implementación — Fase 1 ✅
+
+La Fase 1 (IA como segunda opinión, con Google Gemini) está implementada:
+
+- **Edge Function** [`supabase/functions/analizar-esfera`](../supabase/functions/analizar-esfera/index.ts): valida el usuario, arma el prompt con la rúbrica CERES por esfera y llama a Gemini. La clave `GEMINI_API_KEY` vive como **secret** (nunca en el cliente).
+- **Cliente**: `StorageService.analyzeSphereAI(esfera, base64)` → `supabase.functions.invoke('analizar-esfera', ...)`.
+- **UI**: botón **"Analizar con IA"** en cada esfera; tarjeta "Segunda opinión (IA)" con nivel, confianza y motivos.
+- **Datos**: el resultado se guarda en `aiAnalysis[esfera]` dentro de la evaluación (y en `data` en Supabase).
+- **Sugerencia combinada**: pondera Checklist (0.45) + heurístico (0.25) + IA (0.30) según las fuentes disponibles.
+- **Fallback**: si no hay red o la IA falla, la app sigue funcionando con heurístico + checklist.
+
+Despliegue/configuración: ver [`DESPLIEGUE.md`](DESPLIEGUE.md) y [`supabase/functions/analizar-esfera/README.md`](../supabase/functions/analizar-esfera/README.md).
+
 ## Punto de integración
 
 El contrato actual de `analyzeImage(spId)` ya es el lugar ideal:

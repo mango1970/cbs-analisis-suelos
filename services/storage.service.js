@@ -69,5 +69,11 @@ var StorageService = (function() {
     return _provider.onAuthStateChange(cb);
   }
 
-  return { setProvider, upload, saveEval, getUser, signUp, signIn, signOut, resetPassword, updatePassword, onAuthStateChange };
+  // Analiza una foto de esfera con IA (Gemini via Edge Function)
+  function analyzeSphereAI(esfera, imageBase64) {
+    if (!_provider || !_provider.analyzeSphereAI) return Promise.resolve({ error: 'Proveedor no disponible' });
+    return _provider.analyzeSphereAI(esfera, imageBase64);
+  }
+
+  return { setProvider, upload, saveEval, getUser, signUp, signIn, signOut, resetPassword, updatePassword, onAuthStateChange, analyzeSphereAI };
 })();

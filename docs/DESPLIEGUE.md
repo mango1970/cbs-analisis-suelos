@@ -56,6 +56,20 @@ En **Auth → URL Configuration**:
 
 Sin esto, el enlace de recuperación de contraseña no vuelve correctamente a la app.
 
+## IA (Gemini) — Edge Function
+
+La Fase 1 usa una **Edge Function** `analizar-esfera` como proxy seguro hacia Google Gemini.
+
+1. **API key de Google:** crear en https://aistudio.google.com
+2. **Desplegar la función:** Supabase → **Edge Functions → Deploy a new function → Via editor** → nombre exacto **`analizar-esfera`** → pegar [`supabase/functions/analizar-esfera/index.ts`](../supabase/functions/analizar-esfera/index.ts) → **Deploy**.
+3. **Secrets** (Edge Functions → Secrets):
+   - `GEMINI_API_KEY` = tu API key
+   - `GEMINI_MODEL` = *(opcional)* `gemini-2.5-flash`
+4. Probar desde la app: en una esfera con foto, pulsar **"Analizar con IA"**.
+
+> Detalle completo en [`supabase/functions/analizar-esfera/README.md`](../supabase/functions/analizar-esfera/README.md).
+> La clave de Google **no** se guarda en el cliente ni en el repo.
+
 ## Actualización en dispositivos (PWA)
 
 - El service worker se actualiza al abrir la app; puede requerir **cerrar y reabrir** dos veces.

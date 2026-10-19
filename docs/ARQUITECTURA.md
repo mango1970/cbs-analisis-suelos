@@ -68,9 +68,17 @@ Esta separación permite cambiar de proveedor (por ejemplo, otro backend) tocand
 1. Recorre `ev.photos`; por cada foto redimensiona (`resizeImage` a máx. 1200 px, JPEG 0.8) y sube al bucket `fotos` con ruta `evals/{evalId}/{site|spheres}/{clave}_{i}`.
 2. Construye un documento `cloudDoc` con `site`, `photoRefs` (solo rutas relativas, nunca dataURLs), `ratings`, `notes`, `checks`, `wormCount`, `ts` y `user_id`.
 3. `StorageService.saveEval(cloudDoc)` → inserta en la tabla `evaluaciones`.
-4. Marca la evaluación local como `synced`.
+4. Marca la evaluación local como `synced` (y guarda `cloudId`). Devuelve una `Promise<boolean>` (éxito/fallo).
 
-Si falla (sin red o error), la evaluación ya está guardada localmente y se reintenta al volver a sincronizar manualmente. La UI muestra el estado (Sincronizado / Pendiente).
+### Sincronización diferida (offline → online)
+
+- La evaluación se guarda **siempre** primero en IndexedDB, con sus fotos (dataURLs) y `synced:false`.
+- Si se finalizó **sin red**, `syncPendingEvals()` la deja pendiente.
+- **Al recuperar conexión** (evento `online`) y **al iniciar sesión** (`authDone`), `syncPendingEvals()` sube automáticamente todas las evaluaciones pendientes (`!synced && !cloudId`) con sus fotos.
+- Guarda `_syncing` para evitar ejecuciones concurrentes.
+- La pantalla de inicio muestra **"N sin sincronizar"** (`updatePendingIndicator`); al completarse, el aviso desaparece y aparece el toast de sincronización.
+
+> `uploadEvalToCloud` es idempotente por seguridad: si la evaluación ya tiene `synced` o `cloudId`, no se vuelve a subir.
 
 ## Autenticación
 

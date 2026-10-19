@@ -27,6 +27,13 @@ Bitácora viva del proyecto: estado, decisiones, cambios y próximos pasos. **Ac
 
 ## Bitácora de cambios
 
+### 2026-10 — Cita de la fuente metodológica
+
+- Se reemplazó la cita corta por la **referencia completa** de la metodología en `README.md`, `docs/METODOLOGIA_CERES.md` y `MANUAL_DE_USO.md`:
+  > Sabaini, C. y Ávila, G. (2015). *Manual de determinación de la condición biológica de suelo in situ e in visu en los sistemas agrícolas.* Programa de Restauración Biológica de Suelo (RBS), Centro Regional de Innovación Hortofrutícola de Valparaíso. 57 pp. Quillota, Chile.
+- En la **UI de la app** se mantiene un texto breve: "Basado en: Sabaini & Ávila, 2015 — Manual CERES".
+- Se mantiene separada la referencia de lombrices (Selles et al. 2006).
+
 ### 2026-10 — Fase 1 de IA (Gemini)
 
 - **Edge Function `analizar-esfera`**: proxy seguro a Google Gemini (la clave vive como secret). Recibe la foto de una esfera y devuelve `{score, conf, reasons}`.

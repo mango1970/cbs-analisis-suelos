@@ -114,6 +114,6 @@ GitHub Pages con GitHub Actions. Pasos y consideraciones de caché en [`docs/DES
 
 ## Créditos
 
-- Metodología: **Manual CERES — Sabaini & Ávila 2015**.
-- Referencia de lombrices: Selles et al. 2006.
+- **Metodología:** Sabaini, C. y Ávila, G. (2015). *Manual de determinación de la condición biológica de suelo in situ e in visu en los sistemas agrícolas.* Programa de Restauración Biológica de Suelo (RBS), Centro Regional de Innovación Hortofrutícola de Valparaíso. 57 pp. Quillota, Chile.
+- **Referencia de lombrices:** Selles et al. 2006.
 - © 2026 Mauricio Núñez G. — Todos los derechos reservados.

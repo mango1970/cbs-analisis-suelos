@@ -2,7 +2,7 @@
 
 Guía completa para evaluar la **Condición Biológica del Suelo (CBS)** con la app, en terreno y desde el celular.
 
-> Basado en el *Manual CERES — Sabaini & Ávila 2015*.
+> Basado en el manual **CERES** de **Sabaini & Ávila (2015)**. La referencia completa está al final, en [Referencias](#referencias).
 > Versión de la app: v1.0 beta · evaluación individual.
 
 ---
@@ -393,4 +393,11 @@ Las fotos se **comprimen** automáticamente antes de subirse para ahorrar datos 
 
 ---
 
-*Manual de uso — CBS Evaluador v1.0 beta. Basado en el Manual CERES (Sabaini & Ávila 2015).*
+## Referencias
+
+- **Sabaini, C. y Ávila, G. (2015).** *Manual de determinación de la condición biológica de suelo in situ e in visu en los sistemas agrícolas.* Programa de Restauración Biológica de Suelo (RBS), Centro Regional de Innovación Hortofrutícola de Valparaíso. 57 pp. Quillota, Chile.
+- **Selles et al. (2006)** — referencia del cálculo de lombrices (citada en el manual CERES).
+
+---
+
+*Manual de uso — CBS Evaluador v1.0 beta. Basado en Sabaini & Ávila (2015). Ver Referencias.*

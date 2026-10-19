@@ -1,5 +1,5 @@
 /* CBS Evaluador — Service Worker v5 */
-var CACHE='cbs-v17';
+var CACHE='cbs-v18';
 
 /* Recursos locales pre-cacheados al instalar */
 var LOCAL=[

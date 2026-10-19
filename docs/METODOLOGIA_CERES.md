@@ -2,6 +2,8 @@
 
 La app implementa la evaluación de la **Condición Biológica del Suelo (CBS)** del *Manual CERES* (Sabaini & Ávila, 2015). La vida del suelo se evalúa en **5 esferas** interrelacionadas. Para cada una se registra evidencia (fotos), se marcan criterios del checklist y se asigna una **valoración final**.
 
+> **Referencia:** Sabaini, C. y Ávila, G. (2015). *Manual de determinación de la condición biológica de suelo in situ e in visu en los sistemas agrícolas.* Programa de Restauración Biológica de Suelo (RBS), Centro Regional de Innovación Hortofrutícola de Valparaíso. 57 pp. Quillota, Chile.
+
 > La app **sugiere** un nivel a partir del checklist y del análisis de imagen, pero la **valoración final la decide el evaluador**. La sugerencia nunca reemplaza la observación directa.
 
 ## Escala de valoración

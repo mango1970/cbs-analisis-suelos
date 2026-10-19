@@ -58,6 +58,24 @@ var StorageService = (function() {
     return _provider.signOut();
   }
 
+  // Envia un correo con enlace para restablecer la contraseña
+  function resetPassword(email) {
+    if (!_provider) return Promise.resolve({ error: { message: 'Proveedor no disponible' } });
+    return _provider.resetPassword(email);
+  }
+
+  // Actualiza la contraseña del usuario con la sesion de recuperacion activa
+  function updatePassword(password) {
+    if (!_provider) return Promise.resolve({ error: { message: 'Proveedor no disponible' } });
+    return _provider.updatePassword(password);
+  }
+
+  // Escucha eventos de auth (ej. PASSWORD_RECOVERY al abrir el enlace del correo)
+  function onAuthStateChange(cb) {
+    if (!_provider || !_provider.onAuthStateChange) return null;
+    return _provider.onAuthStateChange(cb);
+  }
+
   // ========== GRUPOS ==========
 
   function crearGrupo(sitio, userId) {
@@ -70,5 +88,5 @@ var StorageService = (function() {
     return _provider.unirseAGrupo(codigo);
   }
 
-  return { setProvider, upload, saveEval, saveCons, getUser, signUp, signIn, signOut, crearGrupo, unirseAGrupo };
+  return { setProvider, upload, saveEval, saveCons, getUser, signUp, signIn, signOut, resetPassword, updatePassword, onAuthStateChange, crearGrupo, unirseAGrupo };
 })();

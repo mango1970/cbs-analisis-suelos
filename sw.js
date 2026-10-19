@@ -1,5 +1,5 @@
 /* CBS Evaluador — Service Worker v5 */
-var CACHE='cbs-v10';
+var CACHE='cbs-v11';
 
 /* Recursos locales pre-cacheados al instalar */
 var LOCAL=[
@@ -67,6 +67,24 @@ self.addEventListener('fetch',function(e){
   if(e.request.url.indexOf('supabase.co/auth')>-1)return;
   if(e.request.url.indexOf('supabase.co/rest')>-1)return;
   if(e.request.url.indexOf('supabase.co/storage')>-1)return;
+
+  /* Navegacion: network-first (trae siempre lo ultimo, con fallback offline) */
+  if(e.request.mode==='navigate'){
+    e.respondWith(
+      fetch(e.request).then(function(response){
+        if(response&&response.status===200){
+          var clone=response.clone();
+          caches.open(CACHE).then(function(c){c.put(e.request,clone);});
+        }
+        return response;
+      }).catch(function(){
+        return caches.match(e.request).then(function(cached){
+          return cached||caches.match('./index.html');
+        });
+      })
+    );
+    return;
+  }
 
   e.respondWith(
     caches.match(e.request).then(function(cached){

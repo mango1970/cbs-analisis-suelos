@@ -150,6 +150,9 @@ canvas[id^="rdr"]{display:block;max-width:100%}
       </div>
       <div id="auth-err" class="auth-err"></div>
       <button id="auth-btn" class="bp w-full py-2.5" onclick="handleAuth()">Iniciar Sesión</button>
+      <div id="forgot-wrap" class="text-center">
+        <span class="auth-link" onclick="forgotPassword()">¿Olvidaste tu contraseña?</span>
+      </div>
     </div>
     <div class="mt-3 flex items-center justify-center gap-1">
       <span id="auth-toggle-text" class="text-e-600 text-xs md:text-sm">¿No tienes cuenta?</span>
@@ -157,6 +160,37 @@ canvas[id^="rdr"]{display:block;max-width:100%}
     </div>
   </div>
   <p class="text-e-700 text-xs mt-4 md:mt-6">Manual CERES — Sabaini & Avila 2015</p>
+</div>
+</div>
+
+<!-- ========== PANTALLA: RESTABLECER CONTRASEÑA ========== -->
+<div id="sr" class="scr">
+<div class="flex flex-col items-center justify-center min-h-screen text-center px-4">
+  <div class="mb-4 md:mb-6" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#d4a853,#b8923f);display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px rgba(212,168,83,.2)">
+    <i class="fas fa-key text-2xl md:text-3xl" style="color:#1a1510"></i>
+  </div>
+  <h1 class="font-d text-2xl md:text-4xl font-black mb-1">Nueva Contraseña</h1>
+  <p class="text-e-500 text-xs md:text-sm mb-5">Ingresa una nueva contraseña para recuperar el acceso</p>
+  <div class="cd p-5 md:p-6 w-full max-w-sm md:max-w-md text-left">
+    <div class="flex flex-col gap-3">
+      <div>
+        <label class="flb">Nueva contraseña</label>
+        <div class="pwd-wrap">
+          <input id="reset-pass" type="password" class="finp" placeholder="••••••••" autocomplete="new-password">
+          <button type="button" class="pwd-toggle" tabindex="-1" onclick="togglePassVis('reset-pass')"><i class="fas fa-eye"></i></button>
+        </div>
+      </div>
+      <div>
+        <label class="flb">Confirmar contraseña</label>
+        <div class="pwd-wrap">
+          <input id="reset-pass2" type="password" class="finp" placeholder="Repite la contraseña" autocomplete="new-password" onkeydown="if(event.key==='Enter')saveNewPassword()">
+          <button type="button" class="pwd-toggle" tabindex="-1" onclick="togglePassVis('reset-pass2')"><i class="fas fa-eye"></i></button>
+        </div>
+      </div>
+      <div id="reset-err" class="auth-err"></div>
+      <button id="reset-btn" class="bp w-full py-2.5" onclick="saveNewPassword()">Guardar contraseña</button>
+    </div>
+  </div>
 </div>
 </div>
 
@@ -316,13 +350,13 @@ canvas[id^="rdr"]{display:block;max-width:100%}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <!-- Config y capa de servicio -->
-<script src="supabase-config.js?v=7"></script>
-<script src="services/storage.service.js?v=7"></script>
-<script src="services/supabase.provider.js?v=7"></script>
-<script src="services/localdb.service.js?v=8"></script>
+<script src="supabase-config.js?v=9"></script>
+<script src="services/storage.service.js?v=9"></script>
+<script src="services/supabase.provider.js?v=9"></script>
+<script src="services/localdb.service.js?v=9"></script>
 
 <!-- Logica principal -->
-<script src="app.js?v=8"></script>
+<script src="app.js?v=9"></script>
 
 <!-- PWA Service Worker -->
 <script>

@@ -93,6 +93,27 @@ var SupabaseProvider = (function() {
     return _client.auth.signOut();
   }
 
+  // Envia correo de recuperacion. El enlace vuelve a la app (redirectTo)
+  function resetPassword(email) {
+    if (!_ready) return Promise.resolve({ error: { message: 'No inicializado' } });
+    var redirectTo = window.location.origin + window.location.pathname;
+    return _client.auth.resetPasswordForEmail(email, { redirectTo: redirectTo });
+  }
+
+  // Actualiza la contrasena (requiere sesion de recuperacion activa)
+  function updatePassword(password) {
+    if (!_ready) return Promise.resolve({ error: { message: 'No inicializado' } });
+    return _client.auth.updateUser({ password: password });
+  }
+
+  // Suscripcion a eventos de auth
+  function onAuthStateChange(cb) {
+    if (!_ready) return null;
+    return _client.auth.onAuthStateChange(function(event, session) {
+      cb(event, session);
+    });
+  }
+
   // ========== GRUPOS ==========
 
   // Crea un grupo con codigo de 6 caracteres unico
@@ -120,7 +141,7 @@ var SupabaseProvider = (function() {
     });
   }
 
-  return { init, upload, saveEval, saveCons, getUser, signUp, signIn, signOut, crearGrupo, unirseAGrupo };
+  return { init, upload, saveEval, saveCons, getUser, signUp, signIn, signOut, resetPassword, updatePassword, onAuthStateChange, crearGrupo, unirseAGrupo };
 })();
 
 // Auto-inicializar si Supabase esta habilitado

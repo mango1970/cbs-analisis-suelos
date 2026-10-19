@@ -160,6 +160,7 @@ function toggleAuth(){
   document.getElementById('auth-toggle-text').textContent=isLogin?'¿No tienes cuenta?':'¿Ya tienes cuenta?';
   document.getElementById('auth-toggle-link').textContent=isLogin?'Regístrate':'Iniciar Sesión';
   document.getElementById('auth-confirm-group').classList.toggle('hidden',isLogin);
+  var fw=document.getElementById('forgot-wrap');if(fw)fw.classList.toggle('hidden',!isLogin);
   resetAuthForm();
 }
 
@@ -213,6 +214,50 @@ function handleAuth(){
       authDone();
     }).catch(function(e){document.getElementById('auth-btn').disabled=false;err.textContent='Error de conexión.';});
   }
+}
+
+/* ========== RECUPERACION DE CONTRASEÑA ========== */
+function forgotPassword(){
+  var email=document.getElementById('auth-email').value.trim();
+  var err=document.getElementById('auth-err');
+  if(!email){err.textContent='Escribe tu correo arriba para enviarte el enlace.';document.getElementById('auth-email').focus();return;}
+  err.textContent='Enviando enlace...';
+  var fw=document.getElementById('forgot-wrap');if(fw)fw.style.pointerEvents='none';
+  StorageService.resetPassword(email).then(function(res){
+    if(fw)fw.style.pointerEvents='';
+    if(res&&res.error){err.textContent=res.error.message||'No se pudo enviar el correo.';return;}
+    err.textContent='';
+    toast('Revisa tu correo: te enviamos un enlace para restablecer la contraseña.','s');
+  }).catch(function(){if(fw)fw.style.pointerEvents='';err.textContent='Error de conexión.';});
+}
+
+function showResetPassword(){
+  document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
+  document.getElementById('sr').classList.add('on');
+  document.getElementById('pbar').classList.add('hidden');
+  var p=document.getElementById('reset-pass');if(p){p.value='';p.type='password';}
+  var p2=document.getElementById('reset-pass2');if(p2){p2.value='';p2.type='password';}
+  var e=document.getElementById('reset-err');if(e)e.textContent='';
+  document.querySelectorAll('#sr .pwd-toggle i').forEach(function(el){el.className='fas fa-eye';});
+}
+
+function saveNewPassword(){
+  var p=document.getElementById('reset-pass').value;
+  var p2=document.getElementById('reset-pass2').value;
+  var err=document.getElementById('reset-err');
+  if(!p||!p2){err.textContent='Completa ambos campos.';return;}
+  if(p.length<6){err.textContent='La contraseña debe tener al menos 6 caracteres.';return;}
+  if(p!==p2){err.textContent='Las contraseñas no coinciden.';return;}
+  err.textContent='Guardando...';
+  document.getElementById('reset-btn').disabled=true;
+  StorageService.updatePassword(p).then(function(res){
+    document.getElementById('reset-btn').disabled=false;
+    if(res&&res.error){err.textContent=res.error.message||'No se pudo actualizar la contraseña.';return;}
+    toast('Contraseña actualizada. Inicia sesión.','s');
+    if(window.history&&window.history.replaceState){try{history.replaceState(null,'',window.location.pathname+window.location.search);}catch(e){}}
+    var done=function(){showAuth();};
+    if(typeof StorageService!=='undefined'&&StorageService.signOut){StorageService.signOut().then(done).catch(done);}else{done();}
+  }).catch(function(){document.getElementById('reset-btn').disabled=false;err.textContent='Error de conexión.';});
 }
 
 function doLogout(){
@@ -1101,6 +1146,30 @@ async function init(){
   await LocalDB.init();
   await loadLSAsync();
   await loadHistAsync();
+
+  // Escuchar recuperacion de contrasena (Supabase emite PASSWORD_RECOVERY)
+  if(typeof StorageService!=='undefined'&&StorageService.onAuthStateChange){
+    StorageService.onAuthStateChange(function(event){
+      if(event==='PASSWORD_RECOVERY'){showResetPassword();}
+    });
+  }
+
+  // Detectar enlace de recuperacion en la URL
+  var hash=window.location.hash||'';
+  if(/(?:^|[#&])type=recovery(?:&|$)/.test(hash)){
+    showResetPassword();
+    if(typeof StorageService!=='undefined'&&StorageService.getUser){StorageService.getUser().catch(function(){});}
+    updateOnlineStatus();
+    return;
+  }
+  if(/(?:^|[#&])error=/.test(hash)){
+    if(window.history&&window.history.replaceState){try{history.replaceState(null,'',window.location.pathname+window.location.search);}catch(e){}}
+    showAuth();
+    setTimeout(function(){var e=document.getElementById('auth-err');if(e)e.textContent='El enlace de recuperación no es válido o expiró. Solicita uno nuevo.';},0);
+    updateOnlineStatus();
+    return;
+  }
+
   checkAuth();
   loadSite();
   if(!Array.isArray(St.photos.sh))St.photos.sh=St.photos.sh?[St.photos.sh]:[];

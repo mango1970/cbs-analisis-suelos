@@ -3,15 +3,15 @@ var CACHE='cbs-v9';
 
 /* Recursos locales pre-cacheados al instalar */
 var LOCAL=[
-  '/',
-  '/index.html',
-  '/app.js',
-  '/supabase-config.js',
-  '/services/storage.service.js',
-  '/services/supabase.provider.js',
-  '/services/localdb.service.js',
-  '/manifest.json',
-  '/icon.svg'
+  './',
+  './index.html',
+  './app.js',
+  './supabase-config.js',
+  './services/storage.service.js',
+  './services/supabase.provider.js',
+  './services/localdb.service.js',
+  './manifest.json',
+  './icon.svg'
 ];
 
 /* CDN externos — cache para funcionamiento offline */

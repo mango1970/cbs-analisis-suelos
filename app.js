@@ -5,6 +5,11 @@
    interfaz de almacenamiento remoto
    ============================================================ */
 
+/* Registrar el listener de recuperacion de contrasena lo antes posible (antes de los await de init) */
+if(typeof StorageService!=='undefined'&&StorageService.onAuthStateChange){
+  try{StorageService.onAuthStateChange(function(event){if(event==='PASSWORD_RECOVERY'){showResetPassword();}});}catch(e){}
+}
+
 /* ========== DATOS DE ESFERAS ========== */
 var SP=[
 {id:'det',name:'Detritosfera',icon:'fa-leaf',color:'#8d7340',
@@ -1147,22 +1152,15 @@ async function init(){
   await loadLSAsync();
   await loadHistAsync();
 
-  // Escuchar recuperacion de contrasena (Supabase emite PASSWORD_RECOVERY)
-  if(typeof StorageService!=='undefined'&&StorageService.onAuthStateChange){
-    StorageService.onAuthStateChange(function(event){
-      if(event==='PASSWORD_RECOVERY'){showResetPassword();}
-    });
-  }
-
   // Detectar enlace de recuperacion en la URL (hash capturado antes de que el SDK lo consuma)
-  var hash=(window.__CBS_INITIAL_HASH||'')+'||'+(window.location.hash||'');
-  if(/(?:^|[#&])type=recovery(?:&|$)/.test(hash)){
+  var rawHash=(window.__CBS_INITIAL_HASH||window.location.hash||'');
+  if(rawHash.indexOf('type=recovery')>-1){
     showResetPassword();
     if(typeof StorageService!=='undefined'&&StorageService.getUser){StorageService.getUser().catch(function(){});}
     updateOnlineStatus();
     return;
   }
-  if(/(?:^|[#&])error=/.test(hash)){
+  if(rawHash.indexOf('error=')>-1){
     if(window.history&&window.history.replaceState){try{history.replaceState(null,'',window.location.pathname+window.location.search);}catch(e){}}
     showAuth();
     setTimeout(function(){var e=document.getElementById('auth-err');if(e)e.textContent='El enlace de recuperación no es válido o expiró. Solicita uno nuevo.';},0);

@@ -5,6 +5,8 @@ Aplicación web (PWA) para evaluar la **Condición Biológica del Suelo (CBS)** 
 > **Estado:** v1.0 beta — flujo de **evaluación individual** (un evaluador por evaluación).
 > La evaluación participativa/grupal (código de grupo, consenso y multievaluador) fue **retirada** del producto. Ver el historial en [`docs/SEGUIMIENTO.md`](docs/SEGUIMIENTO.md).
 
+📖 **Manual de uso (para el evaluador en terreno):** [`MANUAL_DE_USO.md`](MANUAL_DE_USO.md)
+
 ---
 
 ## Características
@@ -99,6 +101,7 @@ GitHub Pages con GitHub Actions. Pasos y consideraciones de caché en [`docs/DES
 
 | Documento | Contenido |
 |---|---|
+| [`MANUAL_DE_USO.md`](MANUAL_DE_USO.md) | Manual paso a paso para el evaluador (campo, offline, sincronización). |
 | [`docs/ARQUITECTURA.md`](docs/ARQUITECTURA.md) | Arquitectura, capa de servicios, flujo de datos, offline. |
 | [`docs/METODOLOGIA_CERES.md`](docs/METODOLOGIA_CERES.md) | Las 5 esferas, escalas, cálculo de lombrices y radar. |
 | [`docs/BACKEND_SUPABASE.md`](docs/BACKEND_SUPABASE.md) | Tablas, columnas, RLS, storage y auth. |

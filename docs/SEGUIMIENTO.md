@@ -27,6 +27,12 @@ Bitácora viva del proyecto: estado, decisiones, cambios y próximos pasos. **Ac
 
 ## Bitácora de cambios
 
+### 2026-10 — Documentación y sincronización diferida
+
+- **Documentación completa:** README, arquitectura, metodología CERES, backend, análisis de imagen, roadmap de IA, despliegue y este seguimiento.
+- **Manual de uso** (`MANUAL_DE_USO.md`) orientado al evaluador en terreno.
+- **Sincronización diferida:** si una evaluación se termina **sin conexión**, queda local con aviso "N sin sincronizar" y se **sube automáticamente** (evaluación + fotos) al recuperar la conexión. Antes no se reintentaba.
+
 ### 2026-10 — Puesta en marcha y simplificación
 
 - **Verificación y puesta online**

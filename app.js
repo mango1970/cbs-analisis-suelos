@@ -154,6 +154,8 @@ function authDone(){
   document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
   document.getElementById('s0').classList.add('on');
   updateUserUI();
+  updatePendingIndicator();
+  syncPendingEvals();
 }
 
 function toggleAuth(){
@@ -703,14 +705,19 @@ function finishEval(){
   toast('Evaluacion guardada','s');
   nav(8);
 
-  // Subida en segundo plano al proveedor de nube
+  // Subida en segundo plano (si hay red; si no, queda pendiente y se reintenta al reconectar)
   if(typeof StorageService!=='undefined' && navigator.onLine){
-    uploadEvalToCloud(ev,evalId);
+    uploadEvalToCloud(ev,evalId).then(function(ok){if(ok)toast('Sincronizado \u2601','s');updatePendingIndicator();});
+  }else{
+    updatePendingIndicator();
   }
 }
 
-/* ========== UPLOAD A LA NUBE EN SEGUNDO PLANO ========== */
+/* ========== UPLOAD A LA NUBE (con reintento) ========== */
 function uploadEvalToCloud(ev,evalId){
+  if(!ev)return Promise.resolve(false);
+  if(ev.synced||ev.cloudId){ev.synced=true;return Promise.resolve(true);}
+  if(typeof StorageService==='undefined'||!navigator.onLine)return Promise.resolve(false);
   var uploads=[];
   var photoRefs={};
 
@@ -730,7 +737,7 @@ function uploadEvalToCloud(ev,evalId){
     });
   });
 
-  Promise.all(uploads).then(function(){
+  return Promise.all(uploads).then(function(){
     var cloudDoc={
       id:evalId,site:ev.site,
       photoRefs:photoRefs,// solo rutas relativas — sin dataUrls
@@ -743,10 +750,43 @@ function uploadEvalToCloud(ev,evalId){
     var localEv=St.evals.find(function(e){return e.id===evalId;});
     if(localEv){localEv.photoRefs=photoRefs;localEv.cloudId=docId;localEv.synced=true;}
     saveLS();
-    toast('Sincronizado \u2601','s');
+    return true;
   }).catch(function(err){
     console.warn('[CBS] Error al subir evaluacion:',err);
-    toast('Error al sincronizar: '+(err.message||'desconocido'),'e');
+    return false;
+  });
+}
+
+/* ========== SINCRONIZACION DIFERIDA (al recuperar conexion) ========== */
+var _syncing=false;
+function pendingEvals(){
+  return St.evals.filter(function(e){return !e.synced && !e.cloudId;});
+}
+function updatePendingIndicator(){
+  var el=document.getElementById('pending-info');if(!el)return;
+  var n=pendingEvals().length;
+  el.innerHTML=n>0
+    ? '<span style="display:inline-flex;align-items:center;gap:.3rem;background:rgba(212,168,83,.1);border:1px solid rgba(212,168,83,.3);border-radius:20px;padding:.2rem .6rem;font-size:11px;color:#d4a853"><i class="fas fa-cloud-arrow-up"></i>'+n+' sin sincronizar</span>'
+    : '';
+}
+function syncPendingEvals(){
+  if(_syncing)return;
+  if(typeof StorageService==='undefined'||!navigator.onLine)return;
+  var pending=pendingEvals();
+  if(!pending.length){updatePendingIndicator();return;}
+  _syncing=true;
+  var ok=0,fail=0;
+  var chain=Promise.resolve();
+  pending.forEach(function(ev){
+    chain=chain.then(function(){
+      return uploadEvalToCloud(ev,ev.id).then(function(r){if(r)ok++;else fail++;});
+    });
+  });
+  chain.then(function(){
+    _syncing=false;
+    updatePendingIndicator();
+    if(ok>0)toast(ok+' evaluacion'+(ok>1?'es':'')+' sincronizada'+(ok>1?'s':'')+' \u2601','s');
+    if(fail>0)toast(fail+' sin sincronizar (se reintentara)','i');
   });
 }
 
@@ -946,7 +986,7 @@ function updateOnlineStatus(){
     badge.style.color='#8d7340';
   }
 }
-window.addEventListener('online',updateOnlineStatus);
+window.addEventListener('online',function(){updateOnlineStatus();syncPendingEvals();});
 window.addEventListener('offline',updateOnlineStatus);
 
 /* ========== INIT ========== */

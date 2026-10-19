@@ -21,11 +21,29 @@ Bitácora viva del proyecto: estado, decisiones, cambios y próximos pasos. **Ac
 | Auth + recuperación de contraseña | ✅ Operativo |
 | PWA / offline | ✅ Operativo |
 | Evaluación participativa/grupal | ❌ Retirada del producto |
-| Integración de IA | ⏳ Próximo paso (ver [`INTEGRACION_IA.md`](INTEGRACION_IA.md)) |
+| Integración de IA | ⚠️ Fase 1 implementada; bloqueada por 401 de auth al invocar la Edge Function (ver bitácora) |
 
 ---
 
 ## Bitácora de cambios
+
+### 2026-10 — Fase 1 IA: implementada y desplegada; bloqueada por 401 (RETOMAR AQUÍ)
+
+**Hecho:**
+- **Frontend (en producción):** botón "Analizar con IA" por esfera, tarjeta "Segunda opinión (IA)", `aiAnalysis` guardado en la evaluación, sugerencia combinada con pesos (Checklist 0.45 + heurístico 0.25 + IA 0.30) y bloque de IA en el resumen.
+- **Edge Function `analizar-esfera`** desplegada por el usuario; secret `GEMINI_API_KEY` configurado.
+- **Los logs confirman que la función es alcanzada** (pares `OPTIONS` + `POST`; CORS OK).
+
+**Bloqueo actual:** al pulsar "Analizar con IA", la función responde **401 Unauthorized** en `auth.getUser()`, antes de llamar a Gemini.
+
+**Diagnóstico:** la app envía el **token de sesión vencido** (Supabase lo expira en ~1 h y `functions.invoke` no lo refresca). **No** es la API key de Google ni la configuración de Supabase (verificado: una key/config mala daría 500/502, no 401).
+
+**Plan para retomar (pendiente):**
+1. `services/supabase.provider.js` → `analyzeSphereAI`: refrescar el token antes de invocar (`getSession()` → si `expires_at` vence en <60 s, `refreshSession()`).
+2. Mejorar el error: leer `res.error.context.json()` y mostrar `body.error` (en vez de "non-2xx status code").
+3. Edge Function: devolver `detail` del error de auth + `console.error` para diagnosticar si persiste (requiere re-pegar `index.ts` en el dashboard).
+4. Bump de versión/caché + push; re-probar.
+5. Prueba rápida: **cerrar sesión y volver a entrar** (token nuevo) antes de invocar.
 
 ### 2026-10 — Cita de la fuente metodológica
 
@@ -105,11 +123,11 @@ Bitácora viva del proyecto: estado, decisiones, cambios y próximos pasos. **Ac
 - [x] Despliegue.
 - [x] Seguimiento (este archivo).
 
-### IA (siguiente gran paso)
-- [ ] Decidir enfoque (API de visión vs. on-device) y presupuesto.
-- [ ] Redactar rúbrica/prompt por esfera.
-- [ ] Implementar `analyzeImageAI` con contrato `{score, conf, reasons}`.
-- [ ] UI opt-in + persistencia de `aiAnalysis` + fallback offline.
+### IA (Fase 1 — en curso)
+- [x] Decidir enfoque: Google Gemini (API) vía Supabase Edge Function (proxy seguro).
+- [x] Rúbrica/prompt por esfera (en la Edge Function).
+- [x] `analyzeSphereAI` con contrato `{score, conf, reasons}` + UI + `aiAnalysis` + fallback.
+- [ ] **Resolver 401 de auth** (refresco de token en cliente + detalle de error en la función).
 - [ ] Validación contra evaluaciones humanas.
 
 ### Futuro (consolidación de datos)

@@ -1,12 +1,59 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="90" fill="#1a1510"/>
-  <circle cx="256" cy="256" r="190" fill="#223318"/>
-  <!-- tallo -->
-  <line x1="256" y1="370" x2="256" y2="185" stroke="#5a8a4a" stroke-width="18" stroke-linecap="round"/>
-  <!-- hoja izquierda -->
-  <path d="M256 285 Q195 255 172 185 Q235 188 256 285" fill="#5a8a4a"/>
-  <!-- hoja derecha -->
-  <path d="M256 248 Q315 218 340 148 Q278 158 256 248" fill="#3a6a2a"/>
-  <!-- tierra -->
-  <ellipse cx="256" cy="372" rx="90" ry="18" fill="#d4a853" opacity=".35"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 512 512"
+   width="100%"
+   height="100%"
+   version="1.1"
+   id="svg3"
+   sodipodi:docname="CBS favicon.svg"
+   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs3" />
+  <sodipodi:namedview
+     id="namedview3"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.86592959"
+     inkscape:cx="285.24259"
+     inkscape:cy="73.331597"
+     inkscape:window-width="1920"
+     inkscape:window-height="991"
+     inkscape:window-x="1791"
+     inkscape:window-y="609"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg3" />
+  <!-- Fondo circular verde orgánico -->
+  <circle
+     cx="256.20413"
+     cy="256"
+     r="256"
+     fill="#4a7c39"
+     id="circle1" />
+  <!-- Tallo central con terminación redondeada -->
+  <path
+     d="m 254.17366,301.05988 v 120 a 18.598365,16.000001 0 0 0 37.19673,0 v -120 z"
+     fill="#f3f1e7"
+     id="path1"
+     style="stroke-width:1.07815" />
+  <!-- Hoja izquierda -->
+  <path
+     d="m 291.37677,303.09656 c -28,10 -72.28389,24.2839 -125.04785,-16.63317 -24.96143,-18.46575 -54.69188,-90.0749 -41.55829,-102.00998 9.69502,-8.8103 69.93414,-5.41552 106.35734,10.26356 41.53269,18.88198 60.2488,78.37959 60.2488,108.37959 z"
+     fill="#f3f1e7"
+     id="path2"
+     sodipodi:nodetypes="ccscc" />
+  <!-- Hoja derecha -->
+  <path
+     d="m 234.8664,189.08221 c 9,-25 89.11962,-73.25997 131.05423,-56.01116 3.46093,10.7161 9.79267,41.01754 -17.95853,80.81658 -33.33156,37.3076 -58.53443,44.85163 -59.79958,41.95793 -13.34834,-30.53061 -12.57428,-36.69973 -53.29612,-66.76335 z"
+     fill="#f3f1e7"
+     id="path3"
+     sodipodi:nodetypes="cccsc" />
 </svg>

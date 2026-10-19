@@ -1154,8 +1154,8 @@ async function init(){
     });
   }
 
-  // Detectar enlace de recuperacion en la URL
-  var hash=window.location.hash||'';
+  // Detectar enlace de recuperacion en la URL (hash capturado antes de que el SDK lo consuma)
+  var hash=(window.__CBS_INITIAL_HASH||'')+'||'+(window.location.hash||'');
   if(/(?:^|[#&])type=recovery(?:&|$)/.test(hash)){
     showResetPassword();
     if(typeof StorageService!=='undefined'&&StorageService.getUser){StorageService.getUser().catch(function(){});}

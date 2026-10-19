@@ -346,17 +346,20 @@ canvas[id^="rdr"]{display:block;max-width:100%}
   <div class="flex items-center gap-1 px-3 py-1.5 overflow-x-auto" id="pdots"></div>
 </div>
 
+<!-- Capturar el hash inicial (enlaces de recuperacion) ANTES de que el SDK lo consuma -->
+<script>window.__CBS_INITIAL_HASH=window.location.hash||'';</script>
+
 <!-- Supabase SDK — solo se inicializa si SUPABASE_ENABLED=true -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <!-- Config y capa de servicio -->
-<script src="supabase-config.js?v=9"></script>
-<script src="services/storage.service.js?v=9"></script>
-<script src="services/supabase.provider.js?v=9"></script>
-<script src="services/localdb.service.js?v=9"></script>
+<script src="supabase-config.js?v=10"></script>
+<script src="services/storage.service.js?v=10"></script>
+<script src="services/supabase.provider.js?v=10"></script>
+<script src="services/localdb.service.js?v=10"></script>
 
 <!-- Logica principal -->
-<script src="app.js?v=9"></script>
+<script src="app.js?v=10"></script>
 
 <!-- PWA Service Worker -->
 <script>

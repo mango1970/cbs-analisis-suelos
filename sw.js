@@ -1,5 +1,5 @@
 /* CBS Evaluador — Service Worker v5 */
-var CACHE='cbs-v13';
+var CACHE='cbs-v14';
 
 /* Recursos locales pre-cacheados al instalar */
 var LOCAL=[
@@ -12,10 +12,10 @@ var LOCAL=[
   './services/localdb.service.js',
   './manifest.json',
   './icon.svg',
-  './favicon-32.png',
-  './icon-192.png',
-  './icon-512.png',
-  './apple-touch-icon.png'
+  './favicon-32.png?v=2',
+  './icon-192.png?v=2',
+  './icon-512.png?v=2',
+  './apple-touch-icon.png?v=2'
 ];
 
 /* CDN externos — cache para funcionamiento offline */
